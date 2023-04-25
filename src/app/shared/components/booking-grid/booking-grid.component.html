@@ -1,0 +1,11 @@
+<div class="booking-grid" [style.grid-template-rows]="gridTemplateRows">
+  <div
+    class="booking"
+    *ngFor="let booking of bookings; let i = index"
+    [style.top]="calculateTop(booking)"
+    [style.left]="calculateLeft(i)"
+    [style.height]="calculateHeight(booking)"
+  >
+    {{ booking.uuid }}
+  </div>
+</div>

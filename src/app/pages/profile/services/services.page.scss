@@ -1,0 +1,32 @@
+ion-toolbar {
+  --border-width: 0;
+  --border-style: none;
+}
+
+.service-card {
+  padding: 0;
+
+  .service-image {
+    background-color: rgb(228, 228, 228);
+    padding: 0;
+    height: 100%;
+  }
+
+  .icon-container {
+    margin-top: 190%;
+    text-align: center;
+  }
+
+  .service-label {
+    display: block;
+    margin-bottom: 3%;
+  }
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.no-border {
+  border: 0;
+}

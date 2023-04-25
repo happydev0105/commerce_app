@@ -1,0 +1,9 @@
+<div (click)="toogle()">{{ actualDate }}</div>
+<ng-container *ngIf="viewDateTime">
+  <ion-datetime
+    locale="es-ES"
+    first-day-of-week="1"
+    size="cover"
+    presentation="date"
+  ></ion-datetime>
+</ng-container>

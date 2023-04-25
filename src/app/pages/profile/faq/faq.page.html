@@ -1,0 +1,16 @@
+<app-header [backButton]="true" [titlePage]="'Ayuda'" [titleCase]="false"></app-header>
+
+<ion-content>
+  <ion-searchbar *ngIf="faqCategoriesCollectionFiltered.length > 0" (ionInput)="searchFAQCategory($event)"
+    showCancelButton="focus" placeholder="Buscar" cancelButtonText="Cancelar" animated></ion-searchbar>
+
+  <ion-list inset="true" lines="none">
+    <ion-item class="textbox" *ngFor="let item of faqCategoriesCollectionFiltered" button="true"
+      (click)="goToDetail(item)">
+      <ion-label class="text-base">{{item.name}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <app-no-data *ngIf="faqCategoriesCollectionFiltered.length === 0"
+    [title]="'Parece que no hay resultados para tu búsqueda'" [content]="false"></app-no-data>
+</ion-content>

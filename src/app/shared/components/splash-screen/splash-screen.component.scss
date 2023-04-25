@@ -1,0 +1,33 @@
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #a4a4a2;
+    z-index: 9999;
+  
+    .logo {
+      img {
+        width: 150px;
+        height: auto;
+        animation: fadeIn 2s linear;
+      }
+    }
+  
+    .loader {
+      // Add your custom loader styles and animations here
+    }
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }

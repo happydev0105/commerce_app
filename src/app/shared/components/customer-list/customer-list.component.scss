@@ -1,0 +1,34 @@
+.customer-card {
+    padding: 0;
+
+    .customer-row {
+        border-radius: 15px;
+
+        .customer-image {
+            background-color: rgb(228, 228, 228);
+            padding: 0;
+            height: 100%;
+        }
+
+        .icon-container {
+            margin-top: 190%;
+            text-align: center;
+        }
+
+        .customer-label {
+            display: block;
+            margin-top: 15%;
+            margin-left: 5%;
+        }
+    }
+}
+
+ion-searchbar {
+    --background: rgb(228, 228, 228);
+    --cancel-button-color: black;
+}
+
+ion-item {
+    --inner-border-width: 0px;
+}
+

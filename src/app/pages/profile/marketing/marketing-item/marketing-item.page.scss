@@ -1,0 +1,139 @@
+#canvasDiv {
+  border: 1px solid #f4f4f4;
+  margin: 0 auto;
+  width: 100%;
+  height: 350px;
+  max-width: 800px;
+}
+
+.color-block {
+  height: 40px;
+}
+
+#overlay {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 350px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.add-overlay {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+#texto {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  #textWritten {
+    color: #fff;
+    font-size: 24px;
+    line-height: 1.2;
+    background: inherit;
+  }
+  #textWritten:focus-visible {
+    outline: none !important;
+  }
+}
+
+#download {
+  display: none;
+}
+
+#mydiv {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  text-align: center;
+  margin: 10px;
+  top: 0px;
+}
+
+#mydivheader {
+  cursor: move;
+  border-radius: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 50px;
+}
+
+#commerceNameDiv {
+
+  bottom: 0px;
+  left: 10px;
+  position: absolute;
+  color: white;
+  max-width: 60%;
+}
+
+#yeasyDiv {
+  width: 90;
+  height: 0;
+  bottom: 31px;
+  right: 10px;
+  position: absolute;
+
+}
+
+#yeasyLogo {
+  width: 90px;  
+}
+
+.no-side-margin {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.main-grid {
+  ion-button::part(native) {
+    padding-inline-start: 0 !important;
+  }
+}
+
+ion-textarea {
+  width: 100vw;
+}
+
+.icon-button {
+  display: block;
+  margin: 0 auto;
+}
+
+#ratingStars {
+  height: auto;
+  bottom: 0px;
+  top: 55px;
+  position: absolute;
+  color: white;
+}
+
+h3 {
+  display: inline-block;
+}
+
+star-rating {
+  display: inline-block !important;
+  float: none !important;
+}
+
+.spinner-container {
+  margin: 0 auto;
+  width: 50%;
+  position: relative;
+  left: 22%;
+  bottom: 5%;
+}
+
+.commerce-name {
+  font-weight: 600;
+}

@@ -1,0 +1,22 @@
+ion-content, ion-item {
+  --background: #9bfab0;
+
+}
+.payment-confirmed {
+  margin-top: 50%;
+  text-align: center;
+
+  .payment-icon {
+    font-size: 158px;
+  }
+  h1,h2 {
+    color: black;
+  }
+  .filter {
+    filter: invert(1);
+  }
+}
+
+.accept-button {
+  margin: 20px 20px 40px 20px !important;
+}

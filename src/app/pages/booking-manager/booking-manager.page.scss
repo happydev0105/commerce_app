@@ -1,0 +1,124 @@
+ion-header {
+  @apply bg-white;
+}
+.main-content {
+  .swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  align-items: center !important;
+  text-align: center;
+  font-size: 18px;
+  opacity: 0.25;
+  transition: opacity 0.3s ease;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.swiper-slide-active {
+  opacity: 1;
+  @apply shadow-lg;
+}
+
+  .calender {
+    background-color: white;
+    .month {
+      ion-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        ion-label {
+          font-size: 18px;
+          font-weight: 600;
+          padding: 0px 20px;
+        }
+      }
+    }
+    .select-date {
+      text-align: center;
+      border-radius: 10px;
+      padding: 0px 20px 0px 10px;
+
+      .row_cal {
+        width: 100%;
+      }
+      ion-icon {
+        margin-top: 30px;
+      }
+
+      .disabled {
+        color: #ababab !important;
+      }
+      .lbl_day {
+        display: block;
+        margin-bottom: 0px;
+        font-size: 13px;
+        padding-top: 10px;
+      }
+      .lbl_date {
+        display: block;
+        position: relative;
+        z-index: 1;
+        font-size: 14px;
+        padding: 30px 5px 10px 5px;
+      }
+
+      .selectedDay {
+        background: var(--ion-color-primary);
+        color: white !important;
+        border-radius: 10px;
+        font-weight: bold;
+      }
+      .todayDay {
+        color: black;
+        border-radius: 10px;
+        font-weight: bold;
+        outline: 1px solid #ababab;
+      }
+    }
+  }
+  .slot-name {
+    padding: 10px 15px;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .slot {
+    padding: 5px 14px;
+    ion-chip {
+      background-color: white;
+      border: 2px solid lightgray;
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+  }
+  .slot-active {
+    background-color: black !important;
+    color: white;
+    border: 2px solid black !important;
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-weight: 500;
+    font-size: 13px;
+  }
+}
+
+.header-with-padding-top-ios {
+  padding-top: 50px;
+}
+

@@ -1,0 +1,30 @@
+.product-card {
+  padding-bottom: 10px;
+  padding: 0;
+  max-height: 43.5px;
+  .product-row {
+    border-radius: 15px;
+    .product-image {
+      background-color: rgb(228, 228, 228);
+      padding: 0;
+      height: 100%;
+    }
+    .icon-container {
+      margin-top: 190%;
+      text-align: center;
+    }
+    .product-label {
+      display: block;
+      margin-top: 5%;
+      margin-left: 5%;
+      margin-bottom: 3%;
+    }
+    .select-label {
+      display: none;
+    }
+    .qty-select {
+      width: 100%;
+      padding: 0;
+    }
+  }
+}

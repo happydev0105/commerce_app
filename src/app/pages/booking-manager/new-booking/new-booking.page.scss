@@ -1,0 +1,76 @@
+.textbox ion-label {
+  padding: 0px 0px;
+}
+
+.textbox .correct-possition {
+  padding-top: 10px;
+  margin-left: -5px;
+}
+.padding-right {
+  padding-right: 10px;
+}
+
+.service-card {
+  padding: 0;
+  max-height: 43.5px;
+
+  .service-row {
+    border-radius: 15px;
+
+    .service-image {
+      background-color: rgb(228, 228, 228);
+      padding: 0;
+      height: 100%;
+    }
+
+    .icon-container {
+      margin-top: 190%;
+      text-align: center;
+    }
+
+    .service-label {
+      margin: 0 !important;
+      display: block;
+      margin-top: 3%;
+      margin-left: 5%;
+      margin-bottom: 3%;
+    }
+  }
+}
+.customer-card {
+  padding: 0;
+  .customer-row {
+    border-radius: 15px;
+    .customer-image {
+      padding: 0;
+      height: 100%;
+    }
+    .icon-container {
+      margin-top: 170%;
+      text-align: center;
+    }
+    .customer-label {
+      display: block;
+      margin-top: 14%;
+      margin-left: 5%;
+    }
+  }
+}
+ion-datetime {
+  background-color: white;
+}
+
+.date-item {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+ion-checkbox {
+  --size: 24px;
+  margin-right: 0;
+}
+

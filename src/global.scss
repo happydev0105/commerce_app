@@ -1,0 +1,301 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import "~@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
+
+@import "~css-star-rating/scss/star-rating";
+
+@import "~swiper/scss";
+@import "~@ionic/angular/css/ionic-swiper";
+
+@font-face {
+  font-family: "product";
+  src: url(assets/font/ProductSans-Regular.ttf);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+   .dark-header {
+    background: #000;
+   }
+  }
+}
+
+:root {
+  --ion-safe-area-top: 40px !important;
+}
+
+* {
+  font-family: "product" !important;
+}
+
+ion-content {
+  --background: #fff;
+}
+
+ion-input {
+  --background: #fff !important;
+  --color: #4d4d4d !important;
+}
+
+ion-item {
+  font-size: 12px;
+  --inner-border-width: 0;
+}
+
+ion-label {
+  --color: #444444 !important;
+}
+
+ion-footer {
+  background: #fff !important;
+}
+
+ion-searchbar {
+  --background: rgb(228, 228, 228) !important;
+  --cancel-button-color: black !important;
+}
+
+.toast-error {
+  --color: #fff;
+  --border-color: #000;
+  --border-radius: 25px;
+  --border-style: solid;
+  --border-width: 3px;
+  --background: #000;
+  --button-color: red;
+  font-size: 16px;
+}
+
+.toast-success {
+  --color: #fff;
+  --border-color: #000;
+  --border-radius: 25px;
+  --border-style: solid;
+  --border-width: 3px;
+  --background: #000;
+  --button-color: green;
+  font-size: 16px;
+}
+
+.textbox.ios {
+  border: 2px solid #f4f4f4 !important;
+  border-radius: 10px !important;
+  margin: 18px 14px !important;
+  box-shadow: rgb(0 0 0 / 10%) 0px 4px 16px !important;
+  ion-input {
+    margin: 2px 0px;
+  }
+  ion-label {
+    font-size: 12px;
+    padding: 0px 10px;
+  }
+}
+
+ion-item::part(native) {
+  border-radius: 10px !important;
+}
+
+.textbox-lite {
+  border: 2px solid #f4f4f4 !important;
+  border-radius: 10px !important;
+
+  margin: 10px 14px !important;
+
+  box-shadow: rgb(0 0 0 / 10%) 0px 4px 12px !important;
+  ion-input {
+    margin: 2px 0px;
+  }
+  ion-label {
+    font-size: 12px;
+    padding: 0px 10px;
+  }
+}
+.fill-input {
+  border-radius: 10px !important;
+  border: 2px solid rgb(183, 182, 182) !important;
+  color: black !important;
+  transition: border 0.5s !important;
+}
+
+.save-footer {
+  bottom: 2%;
+  left: 3%;
+  width: 95%;
+  justify-content: center;
+}
+
+.picker-button {
+  color: black !important;
+}
+.pending {
+  background-color: orange;
+}
+.black {
+  background-color: black;
+}
+.blue {
+  background-color: cornflowerblue;
+}
+.selectedCard {
+  border: 1px solid black;
+}
+.success {
+  background-color: green;
+}
+.text-center {
+  text-align: center;
+}
+
+.text-white {
+  color: white;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.apply-button {
+  margin: 30px !important;
+}
+
+/* .sc-ion-picker-ios-h {
+  --height: 50vh !important;
+} */
+
+.picker-toolbar.sc-ion-picker-ios {
+  border-bottom: 0px !important;
+}
+
+.picker-wrapper.sc-ion-picker-ios {
+  border-width: 0px !important;
+}
+
+.slide-hours {
+  align-items: center !important;
+  justify-content: center !important;
+  height: 20px !important;
+
+  padding: 15px;
+}
+
+.slide-minutes {
+  align-items: center !important;
+  justify-content: center !important;
+  height: 20px !important;
+
+  padding: 15px;
+}
+.slide-left {
+  align-items: center !important;
+  justify-content: center !important;
+  height: 20px !important;
+
+  padding: 15px;
+}
+
+.slide-right {
+  align-items: center !important;
+  justify-content: center !important;
+  height: 20px !important;
+
+  padding: 15px;
+}
+.no-click {
+  pointer-events: none;
+  cursor: none;
+  caret-color: transparent;
+}
+.modal-no-scroll {
+  .backdrop-no-scroll {
+    ion-content {
+      --overflow: hidden;
+    }
+  }
+}
+
+.birth-selector {
+  .box {
+    border: 1px solid black;
+    min-height: 35px !important;
+    border-radius: 5px;
+  }
+  .swiper-slide-active {
+    opacity: 1;
+  }
+}
+input.star-5:checked ~ label.star:before {
+  color: #e7b37d;
+   text-shadow:unset !important
+}
+.rating.color-ok .star-container .star svg {
+  fill: #e7b37d !important;
+}
+.rating.disabled .star-container .star{
+  opacity: 1 !important;
+}
+::ng-deep .mat-focused .mat-form-field-label {
+  /*change color of label*/
+  color: white !important;
+ }
+ 
+ ::ng-deep.mat-calendar {
+  /*change color of underline*/
+  background-color: white !important;
+ } 
+ 
+ ::ng-deep.mat-calendar {
+  /*change color of underline when focused*/
+  background-color: white !important;;
+ }
+ 
+ ::ng-deep.mat-calendar-body-selected {
+  background-color: #000 !important;
+  color: white;
+}
+ 
+.mat-calendar-body-selected {
+  background-color: #000 !important;
+  color: #fff;
+}
+ mat-datepicker-toggle {
+  color: white !important;
+ }
+
+ .my-picker .picker-wrapper{
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+ 

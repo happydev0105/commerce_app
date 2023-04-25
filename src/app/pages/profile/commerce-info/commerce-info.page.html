@@ -1,0 +1,32 @@
+<app-header [backButton]="true" [titlePage]="'Información del negocio'"></app-header>
+
+<ion-content>
+  <ion-list>
+    <ng-container *ngFor="let item of optionsFiltered">
+      <ion-item [ngClass]="(item?.hasAlert | async) ? 'border-1 border-red-400 border-solid':''" class="textbox" (click)="goTo(item.path)">
+        <ion-icon [name]="item.icon" class="icon-option"></ion-icon>
+        <ion-label class="ion-text-wrap">
+          <h2>{{item.name}}
+            <ion-icon
+            class="text-red-500"
+            *ngIf="item?.hasAlert | async"
+            name="warning-outline">
+          </ion-icon>
+          </h2>
+          <p>{{item.description}}</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-item>
+    </ng-container>
+    <ion-item class="textbox" *ngIf="currentCommerce.slug" (click)="copyToClipboard()">
+      <ion-icon name="copy-outline"></ion-icon>
+      <ion-label class="ion-text-wrap">
+        <h2>Copiar mi url
+         
+        </h2>
+        <p>Copia la url de tu negocio y compartela con tus contactos.</p>
+      </ion-label>
+
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,101 @@
+
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons  slot="start">
+      <ion-back-button slot="start" text="" *ngIf="!isFromCustomer" color="dark">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-back-button>
+      <span  *ngIf="isFromCustomer" slot="start" class="cursor-pointer" (click)="navigateToCustomer()" >
+        <ion-icon class="text-3xl m-" name="chevron-back-outline"></ion-icon>
+      </span>
+    </ion-buttons>
+    <ion-title>Envío de SMS</ion-title>
+ 
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="customerCollection.length > 0">
+  <div class="edit_profile_main_content">
+    <form [formGroup]="smsForm">
+      <ion-list>
+        <ion-item
+          class="textbox"
+          [ngClass]="smsForm.controls['recipents'].value ? 'fill-input' : ''"
+        >
+          <ion-label>Destinatarios</ion-label>
+          <ion-select
+            [disabled]="allRecipents"
+            formControlName="recipents"
+            (ionChange)="calculateRecip($event)"
+            placeholder="Selecciona los clientes"
+            [multiple]="true"
+            [okText]="'Aceptar'"
+            [cancelText]="'Cancelar'"
+          >
+            <ion-select-option
+              *ngFor="let item of customerCollection"
+              [value]="item.phone"
+              >{{ item.name }} {{ item.lastname }}</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+        <ion-item class="textbox">
+          <ion-label slot="start">Enviar a todos los clientes</ion-label>
+          <ion-checkbox
+            slot="end"
+            (ionChange)="onChangeCheckbox($event)"
+            [(ngModel)]="allRecipents"
+            [ngModelOptions]="{ standalone: true }"
+          ></ion-checkbox>
+        </ion-item>
+        <ion-item
+          class="textbox"
+          [ngClass]="smsForm.controls['message'].value ? 'fill-input' : ''"
+        >
+          <ion-label slot="start" class="mt-2">Mensaje</ion-label>
+          <ion-textarea
+            (ionChange)="countCharacter()"
+            rows="5"
+            formControlName="message"
+            [maxlength]="availableCharacters"
+            autocapitalize="true"
+          ></ion-textarea>
+        </ion-item>
+        <div *ngIf="showMessage" class="p-4">
+          Este mensaje sobrepasa los 160 caracteres permitidos por SMS. Por
+          favor modifique el mensaje.
+        </div>
+        <div *ngIf="showMessageExceded" class="p-4">
+          Ha seleccionado más destinatarios que SMS disponibles hay en su
+          cuenta. Por favor cargue más SMS en su cuenta.
+        </div>
+        <ion-item>
+          Caracteres:&nbsp; <span>{{ characterCount }}/160</span>
+        </ion-item>
+        <ion-item>
+          SMS disponibles:&nbsp; <span> {{ availableSMS }}</span>
+        </ion-item>
+        <ion-item>
+          Se enviarán:&nbsp; <span> {{ toSent }}&nbsp;SMS</span>
+        </ion-item>
+      </ion-list>
+    </form>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border" *ngIf="customerCollection.length > 0">
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        ><ion-button
+          class="btn"
+
+          (click)="sendSms()"
+          expand="block"
+        >
+          Enviar SMS
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

@@ -1,0 +1,49 @@
+<app-header [titlePage]="'Horario - Paso 1'" [backButton]="true"></app-header>
+<ion-content>
+  <ion-grid class="mb-12">
+    <ion-row class="ion-justify-content-center">
+      <div class="px-8 text-center">
+        <h1>Horario de tu comercio</h1>
+        <p>Lo primero que necesitamos es el horario de su negocio.</p>
+
+      </div>
+      <div class="w-full">
+        <form [formGroup]="timeTableForm" slot="content">
+          <ion-grid fixed>
+            <ion-list>
+              <ion-row *ngFor="let day of weekDays" (click)="goToConfigureSchedule(day)">
+                <ion-item class=" mx-4 my-2 hour-list w-full textbox-lite">
+                  <ion-col class="no-padding" size="3">
+                    <ion-label class="no-padding">{{day | translateDays | titlecase}}</ion-label>
+                  </ion-col>
+                  <ion-col size="8">
+                    <ion-label *ngIf="timeTableForm.controls[day].value">
+                      {{timeTableForm.controls['checkinTime'+day].value
+                      }}{{timeTableForm.controls['departureTime'+day].value }}
+                    </ion-label>
+                    <ion-label *ngIf="!timeTableForm.controls[day].value">
+                      Cerrado
+                    </ion-label>
+                  </ion-col>
+                  <ion-col size="1">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                  </ion-col>
+                </ion-item>
+              </ion-row>
+            </ion-list>
+          </ion-grid>
+        </form>
+      </div>
+      
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+ <ion-footer class="h-20 py-2 bg-white">
+    <div class="px-8 w-full fixed ">
+        <ion-button (click)="goToNext()" expand="block" class="btn ">
+          Continuar
+        </ion-button>
+      </div>
+  </ion-footer>
+

@@ -1,0 +1,115 @@
+<app-header
+  [backButton]="true"
+  [titlePage]="title"
+  [titleCase]="false"
+></app-header>
+<ion-content>
+  <form [formGroup]="customerForm">
+    <div class="edit_profile_main_content">
+      <ion-item
+        class="textbox"
+        [ngClass]="customerForm.controls['name'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Nombre</ion-label>
+        <ion-input
+          class="ion-text-right"
+          formControlName="name"
+          autocapitalize="true"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="text"
+          [value]="customer?.name"
+          [maxlength]="30"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        [ngClass]="customerForm.controls['lastname'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Apellidos</ion-label>
+        <ion-input
+          class="ion-text-right"
+          formControlName="lastname"
+          autocapitalize="true"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="text"
+          [value]="customer?.lastname"
+          [maxlength]="50"
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        [ngClass]="customerForm.controls['email'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Email</ion-label>
+        <ion-input
+          class="ion-text-right"
+          formControlName="email"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="email"
+          [value]="customer?.email"
+          inputmode="email"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        [ngClass]="customerForm.controls['phone'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Teléfono</ion-label>
+
+        <ion-intl-tel-input
+          class="ion-text-right absolute right-[7px] float-right w-1/2"
+          [enableAutoCountrySelect]="true"
+          [defaultCountryiso]="'es'"
+          [preferredCountries]="['es']"
+          [modalSearchPlaceholder]="'Buscar...'"
+          [modalCloseText]="'Cerrar'"
+          [maxLength]="'9'"
+          formControlName="phone"
+          [inputPlaceholder]="'600 123 456'"
+          modalTitle="Seleccione país"
+        >
+        </ion-intl-tel-input>
+      </ion-item>
+      <div class="px-4" *ngIf="phoneNumber.invalid && phoneNumber.touched">
+        <ion-text color="danger" *ngIf="phoneNumber.errors.required">
+          <p class="ion-no-margin"><sub>El teléfono es requerido</sub></p>
+        </ion-text>
+        <ion-text color="danger" *ngIf="phoneNumber.errors.phone">
+          <p class="ion-no-margin"><sub>El teléfono no es válido.</sub></p>
+        </ion-text>
+      </div>
+
+      <ion-item class="textbox">
+        <ion-label>Bloquear cliente</ion-label>
+        <ion-toggle
+          formControlName="isBlockedByCommerce"
+          color="dark"
+        ></ion-toggle>
+      </ion-item>
+    </div>
+  </form>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button
+          class="btn"
+          [disabled]="!customerForm.valid"
+          (click)="saveCustomer()"
+          expand="block"
+        >
+          Guardar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

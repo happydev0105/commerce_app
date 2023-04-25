@@ -1,0 +1,214 @@
+/*
+  Authors : bunchdevelopers (Rahul Jograna)
+  Website : https://bunchdevelopers.com/
+  App Name : ionic6Template Pack
+  This App Template Source code is licensed as per the
+  terms found in the Website https://bunchdevelopers.com/license
+  Copyright and Good Faith Purchasers © 2021-present bunchdevelopers.
+*/
+.customer-card {
+  padding: 0;
+  .customer-row {
+    border-radius: 15px;
+
+    .customer-image {
+      background-color: rgb(228, 228, 228);
+      padding: 0;
+      height: 100%;
+    }
+
+    .icon-container {
+      margin-top: 190%;
+      text-align: center;
+    }
+
+    .customer-label {
+      display: block;
+      margin-top: 15%;
+      margin-left: 5%;
+    }
+  }
+}
+.service-card {
+  padding: 0;
+  max-height: 43.5px;
+
+  .service-row {
+    border-radius: 15px;
+
+    .service-image {
+      background-color: rgb(228, 228, 228);
+      padding: 0;
+      height: 100%;
+    }
+
+    .icon-container {
+      margin-top: 190%;
+      text-align: center;
+    }
+
+    .service-label {
+      display: block;
+
+    }
+  }
+}
+img {
+  width: 100%;
+}
+.color-pending {
+  background-color: orange;
+  width: 100%;
+  height: 30vh;
+  margin-top: 0px;
+  position: absolute;
+}
+.color-status {
+  width: 100%;
+  height: 30vh;
+  position: absolute;
+}
+.status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 45px;
+
+  .status-info {
+    font-size: 25px;
+    font-weight: bold;
+  }
+}
+.main-content {
+  .card {
+    background-color: white;
+    z-index: 9999;
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    border-radius: 30px;
+    padding: 0px 10px;
+    .title {
+      display: flex;
+      justify-content: center;
+      font-size: 18px;
+
+      color: var(--ion-color-primary);
+      margin-top: 3rem;
+    }
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 20px;
+
+      .logo-name {
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .logo-info {
+        font-size: 35px;
+        font-weight: bold;
+      }
+    }
+
+    .text {
+      font-size: 15px;
+      text-align: center;
+
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: gray;
+      padding: 10px 20px 0px 20px;
+    }
+
+    .textbox {
+      border: 2px solid var(--ion-color-light);
+      border-radius: 15px;
+      font-size: 16px;
+
+      margin: 10px 14px;
+      ion-input {
+        margin: 2px 0px;
+      }
+      ion-label {
+        font-size: 22px;
+        color: var(--ion-color-medium);
+        padding: 0px 10px;
+      }
+      img {
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+      }
+    }
+    .btn {
+      margin: 15px 14px;
+    }
+
+    .login-heading {
+      font-size: 14px;
+      display: flex;
+      justify-content: center;
+      padding: 15px 0px;
+    }
+
+    .btn-row {
+      ion-row {
+        .btn-login {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border: 2px solid var(--ion-color-light);
+          border-radius: 15px;
+          font-size: 16px;
+          font-weight: 600;
+          margin: 10px 0px;
+          padding: 10px 0px;
+          ion-label {
+            margin: 2px 10px;
+          }
+          img {
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+          }
+        }
+      }
+    }
+    .footer {
+      font-size: 14px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 0px;
+      color: var(--ion-color-medium);
+    }
+  }
+}
+.align-end {
+  text-align: end;
+}
+
+.editBtn {
+  position: absolute;
+  top: 35px;
+  right: 15px;
+}
+
+.backBtn {
+  position: absolute;
+  top: 35px;
+  left: 15px;
+  color: #fff;
+}
+
+.employee-label {
+  font-family: "product" !important;
+  font-size: 14px !important;
+  color: #666666 !important;
+}

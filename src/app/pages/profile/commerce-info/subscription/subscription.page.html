@@ -1,0 +1,61 @@
+<app-header [backButton]="true" [titleCase]="false" [titlePage]="'Tu suscripción'"></app-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <div class="iconito" [ngClass]="{
+        'active': subscription?.isActive,
+        'active-icon': subscription?.isActive,
+        'inactive': !subscription?.isActive}"></div>
+      <ion-label [ngClass]="{
+        'text-active': subscription?.isActive,
+        'text-inactive': !subscription?.isActive}">{{subscription?.isActive ? 'Activo' : 'No activo'}}</ion-label>
+    </ion-item>
+
+    <ion-card-header>
+      <ion-card-title>{{subscription?.name}}</ion-card-title>
+      <ion-card-subtitle>Precio: {{subscription?.amount}},{{subscription?.decimals}} €/mes</ion-card-subtitle>
+    </ion-card-header>
+
+
+    <ion-card-content>
+      {{subscription?.description}}
+      <hr>
+      <ion-accordion-group (ionChange)="onChange($event)" inset="true" value="details">
+        <ion-accordion>
+          <ion-item class="view-details" slot="header">
+            <ion-label class="no-margin">{{viewDetailText}}</ion-label>
+          </ion-item>
+          <div slot="content" *ngFor="let detail of detailsSplitted">
+            <ion-list>
+              <ion-item>
+                <ion-icon slot="start" name="checkmark-outline"></ion-icon>
+                <ion-label class="service-label">{{ detail }}</ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list>
+    <ion-list-header> Información acerca de tu suscripción </ion-list-header>
+    <ion-item>
+      <ion-label>Fecha de inicio: <ion-note class="f-right" color="dark"> {{subscription?.startsAt | date: 'dd MMM yyyy'}}</ion-note>
+      </ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Fecha de finalización: <ion-note class="f-right" color="dark"> {{subscription?.expiresAt | date: 'dd MMM yyyy'}}
+        </ion-note>
+      </ion-label>
+    </ion-item>
+
+
+  </ion-list>
+ <div class="flex justify-center items-center">
+   <ion-button class="absolute bottom-2 " (click)="presentAlertConfirm()">Cancelar subscripcion </ion-button>
+ </div>
+
+</ion-content>
+

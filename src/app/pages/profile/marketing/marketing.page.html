@@ -1,0 +1,59 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons  slot="start">
+      <ion-back-button slot="start" text="" *ngIf="!stepImage" color="dark">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-back-button>
+      <span *ngIf="stepImage" slot="start" class="cursor-pointer" (click)="toggleToText()" >
+        <ion-icon class="text-3xl m-" name="chevron-back-outline"></ion-icon>
+      </span>
+    </ion-buttons>
+    <ion-title>Marketing</ion-title>
+ 
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list *ngIf="!stepImage" inset="true">
+    <ion-label>
+      <h2 class="ml-4">{{title}}</h2>
+    </ion-label>
+    <ion-item class="textbox" (click)="addOwnText()">
+      <ion-label>Escribe tu propio texto...</ion-label>
+    </ion-item>
+    <ion-item class="textbox" *ngFor="let item of marketingTextCollection" button="true" (click)="selectText(item)">
+      <ion-label class="ion-text-wrap">{{item}}</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-grid fixed *ngIf="stepImage">
+    <ion-row>
+      <ion-col
+        size="6"
+        class="column-image-personalized"
+        (click)="goToSelectImage()"
+      >
+        <ion-icon
+          size="large"
+          class="icon"
+          color="dark"
+          name="camera-outline"
+        ></ion-icon>
+        <ion-label class="label">Añade tu propia imagen</ion-label>
+      </ion-col>
+      <ion-col size="6">
+        <div (click)="goToCreateMarketingItem(shareYourWorkItem)">
+          <ion-label class="icon" name="lock-closed-outline">Comparte tu trabajo</ion-label>
+        </div>
+        <div class="bg_img" style.backgroundImage="linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.23)), url('{{commerce?.featureImage | getImage: 'commerce': commerce?.uuid}}')"></div>
+      </ion-col>
+      <ion-col *ngFor="let item of marketingItems" size="6">
+        <div (click)="goToCreateMarketingItem(item)">
+          <ion-label class="icon" name="lock-closed-outline">{{item.title}}</ion-label>
+        </div>
+        <div (click)="goToCreateMarketingItem(item)" class="bg_img" [style.backgroundImage]="'url('+ item.image +')'"></div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

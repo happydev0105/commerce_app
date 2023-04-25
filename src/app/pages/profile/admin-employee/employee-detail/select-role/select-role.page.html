@@ -1,0 +1,231 @@
+<app-header
+  [backButton]="true"
+  [titleCase]="false"
+  [titlePage]="'Nivel de permiso'"
+>
+</app-header>
+
+<ion-content>
+  <ion-list>
+    <ion-radio-group
+      [value]="employee?.role || selectedRole.value"
+      (ionChange)="onChangePermission($event)"
+    >
+      <ion-list-header>
+        <ion-label>Elige el nivel de permiso</ion-label>
+      </ion-list-header>
+
+      <ion-item
+        class="textbox"
+        (click)="selectRadio('Empleado Básico','empleado_basico')"
+      >
+        <ion-label>Empleado Básico</ion-label>
+        <ion-radio slot="start" value="empleado_basico"></ion-radio>
+        <ion-button
+          id="empleado_basico"
+          (click)="showRoleInfo($event, 'empleado_basico')"
+          expand="block"
+          fill="clear"
+          shape="round"
+        >
+          <ion-icon name="help-circle-outline" slot="end"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item class="textbox" (click)="selectRadio('Empleado','empleado')">
+        <ion-label>Empleado</ion-label>
+        <ion-radio slot="start" value="empleado"></ion-radio>
+        <ion-button
+          id="empleado"
+          (click)="showRoleInfo($event, 'empleado')"
+          expand="block"
+          fill="clear"
+          shape="round"
+        >
+          <ion-icon name="help-circle-outline" slot="end"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        (click)="selectRadio('Empleado','recepcionista')"
+      >
+        <ion-label>Recepcionista</ion-label>
+        <ion-radio slot="start" value="recepcionista"></ion-radio>
+        <ion-button
+          id="recepcionista"
+          (click)="showRoleInfo($event, 'recepcionista')"
+          expand="block"
+          fill="clear"
+          shape="round"
+        >
+          <ion-icon name="help-circle-outline" slot="end"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item class="textbox" (click)="selectRadio('Gerente','gerente')">
+        <ion-label>Gerente</ion-label>
+        <ion-radio slot="start" value="gerente"></ion-radio>
+        <ion-button
+          id="gerente"
+          (click)="showRoleInfo($event, 'gerente')"
+          expand="block"
+          fill="clear"
+          shape="round"
+        >
+          <ion-icon name="help-circle-outline" slot="end"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        (click)="selectRadio('Personalizado','personalizado')"
+        id="personalized"
+      >
+        <ion-label>Personalizado</ion-label>
+        <ion-radio slot="start" value="personalizado"></ion-radio>
+        <ion-button
+          id="personalized"
+
+          expand="block"
+          fill="clear"
+          shape="round"
+        >
+          <ion-icon name="help-circle-outline" slot="end"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+
+  <ion-modal trigger="empleado_basico" initialBreakpoint="0.90">
+    <ng-template>
+      <ion-content>
+        <ion-list>
+          <ion-list-header>Empleado básico</ion-list-header>
+          <br />
+          <ion-item *ngFor="let permission of permissionCollection">
+            <ion-label class="full-opacity"
+              >{{permission.description}}</ion-label
+            >
+            <ion-checkbox
+              color="dark"
+              [checked]="permission?.roles?.includes(selectedRole.value)"
+              disabled
+              slot="start"
+            ></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal trigger="empleado" initialBreakpoint="0.90">
+    <ng-template>
+      <ion-content>
+        <ion-list>
+          <ion-list-header>Empleado</ion-list-header>
+          <br />
+          <ion-item *ngFor="let permission of permissionCollection">
+            <ion-label class="full-opacity"
+              >{{permission.description}}</ion-label
+            >
+            <ion-checkbox
+              color="dark"
+              [checked]="permission?.roles?.includes(selectedRole.value)"
+              disabled
+              slot="start"
+            ></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal trigger="recepcionista" initialBreakpoint="0.90">
+    <ng-template>
+      <ion-content>
+        <ion-list>
+          <ion-list-header>Recepcionista</ion-list-header>
+          <br />
+          <ion-item *ngFor="let permission of permissionCollection">
+            <ion-label class="full-opacity"
+              >{{permission.description}}</ion-label
+            >
+            <ion-checkbox
+              color="dark"
+              [checked]="permission?.roles?.includes(selectedRole.value)"
+              disabled
+              slot="start"
+            ></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal trigger="gerente" initialBreakpoint="0.90">
+    <ng-template>
+      <ion-content>
+        <ion-list>
+          <ion-list-header>Gerente</ion-list-header>
+          <br />
+          <ion-item *ngFor="let permission of permissionCollection">
+            <ion-label class="full-opacity"
+              >{{permission.description}}</ion-label
+            >
+            <ion-checkbox
+              color="dark"
+              [checked]="permission?.roles?.includes(selectedRole.value)"
+              disabled
+              slot="start"
+            ></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal trigger="personalized" initialBreakpoint="0.9">
+    <ng-template>
+      <ion-content >
+        <form [formGroup]="roleForm" class="mb-8">
+          <ion-list>
+            <ion-list-header>Personalizado</ion-list-header>
+            <br />
+            <ion-item>
+              <ion-label>Seleccionar todos</ion-label>
+              <ion-checkbox
+                mode="md"
+                slot="start"
+                #checkBox
+                (click)="selectAllPermissions($event)"
+              ></ion-checkbox>
+            </ion-item>
+            <ion-item *ngFor="let permission of permissionCollection">
+              <ion-label class="full-opacity"
+                >{{permission.description}}</ion-label
+              >
+              <ion-checkbox
+                [formControlName]="permission.name"
+                color="dark"
+                slot="start"
+              ></ion-checkbox>
+            </ion-item>
+          </ion-list>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="goBack()" class="btn" expand="block">
+          Aceptar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

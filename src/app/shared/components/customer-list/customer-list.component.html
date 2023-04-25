@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Clientes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar #searchbar (ionInput)="searchCustomer($event)" showCancelButton="focus" placeholder="Buscar"
+    cancelButtonText="Cancelar" animated></ion-searchbar>
+
+  <ion-grid fixed style="border-top: 1px solid lightgray; border-bottom: 1px solid lightgray" >
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>{{ customerCollectionFiltered.length }} Clientes</ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row> 
+  </ion-grid>
+  <ng-container *ngIf="isReady">
+    <ion-grid class="customer-card" >
+      <ion-row class="customer-row">
+        <ion-col size="12">
+          <ion-item (click)="goToCreate()" class="textbox">
+            <ion-label slot="start">Crear nuevo cliente</ion-label>
+            <ion-button slot="end" expand="block" fill="clear" shape="round">
+              <ion-icon name="add"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+  <ng-container *ngFor="let customer of customerCollectionFiltered">
+    <ion-card (click)="selectCustomer(customer)" button="true" class="p-0"
+      [ngClass]="customer.uuid === selectedCustomer?.uuid ? 'selectedCard' : ''">
+      <ion-grid class="customer-card">
+        <ion-row class="rounded-2xl">
+          <ion-col *ngIf="customer?.photoURL; else showInitialsAvatar"
+            class="bg-[#e4e4e4] md:bg-white max-w-[4rem] h-full p-0" size="3">
+            <img class="max-w-[4rem] max-h-[4rem] md:w-36 md:h-36" src="{{
+                customer.photoURL | getImage : 'customer' : customer.uuid
+              }}" />
+          </ion-col>
+          <ion-col size="8" class="grid">
+            <div class="place-self-center w-full mt-2 pl-3">
+              <ion-label class="flex justify-between font-semibold"
+              >{{ customer.name + " " + customer.lastname }}
+              <div class="flex absolute right-0 mt-[5px]">
+                <div *ngIf="isBanned(customer.uuid)" class="text-lg mt-[1px]">
+                  <ion-icon name="ban-outline" color="danger"></ion-icon>
+                </div>
+                <div *ngIf="customer.hasApp" class="rounded-full h-4 w-6 ml-2">
+                  <img src="./assets/images/icon.png" alt="" />
+                </div>
+              </div>
+            </ion-label>
+              <p>{{ customer.phone }}</p>
+            </div>
+          </ion-col>
+          <ion-col size="1"> </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+    <ng-template #showInitialsAvatar>
+      <app-avatar-initials [name]="customer?.name" [surname]="customer?.lastname"></app-avatar-initials>
+    </ng-template>
+  </ng-container>
+</ion-content>
+<!-- <ion-footer>
+  <ion-button
+    [disabled]="selectedCustomer === undefined"
+    color="dark"
+    (click)="dismiss()"
+    class="apply-button"
+    expand="block"
+    mode="ios"
+  >
+    Seleccionar cliente
+  </ion-button>
+</ion-footer> -->

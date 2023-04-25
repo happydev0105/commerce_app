@@ -1,0 +1,29 @@
+<div
+  *ngIf="employee"
+  [style.width]="columnWidth"
+  class="bg-white  h-[48px] p-2 text-left"
+>
+
+<div class="grid grid-cols-12 gap-1">
+  <div class="col-span-3">
+    <img
+      class="rounded-full min-w-8 min-h-8 max-w-8 max-h-8 mr-3"
+      src="{{ employee.image | getImage : 'employee' : employee.uuid }}"
+    />
+  </div>
+  <div class="col-span-9">
+    <div class="h-[15px] w-full overflow-hidden">
+      <p class="text-xs text-gray-600 m-0">
+        {{ employee.name.length > 15 ? employee.name.slice(0,15) + '...' : employee.name }} {{ employee.surname }}
+      </p>
+    </div>
+    <div class=" flex">
+      <p class="text-xs text-gray-400 m-0">{{ showDayTimetable() }}</p>
+      <ion-icon
+        *ngIf="employee.hasUnpaidBooking"
+        class="text-red-500"
+        name="warning-outline"
+      ></ion-icon>
+    </div>
+  </div>
+</div>

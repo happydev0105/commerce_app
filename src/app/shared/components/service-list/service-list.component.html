@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Servicios</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss(false)">
+        <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar
+    (ionInput)="searchService($event)"
+    showCancelButton="focus"
+    placeholder="Buscar"
+    cancelButtonText="Cancelar"
+    animated
+  >
+  </ion-searchbar>
+
+  <ion-grid
+    fixed
+    style="border-top: 1px solid lightgray; border-bottom: 1px solid lightgray"
+  >
+    <ion-row>
+      <ion-col style="border-right: 1px solid lightgray">
+        <ion-item>
+          <ion-label *ngIf="serviceCollectionFiltered.length === 1"
+            >{{ serviceCollectionFiltered.length }} Servicio</ion-label
+          >
+          <ion-label *ngIf="serviceCollectionFiltered.length > 1"
+            >{{ serviceCollectionFiltered.length }} Servicios</ion-label
+          >
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-item *ngIf="serviceCollectionFiltered.length > 0 && isConfigScreen">
+    <ng-container
+      *ngIf="
+        this.selectedServices.length === this.serviceCollectionFiltered.length;
+        else unchecked
+      "
+    >
+      <ion-label>Seleccionar todos</ion-label>
+      <ion-checkbox
+        slot="start"
+        #checkBox
+        [checked]="true"
+        (click)="selectAllServices()"
+      ></ion-checkbox>
+    </ng-container>
+    <ng-template #unchecked>
+      <ion-label>Seleccionar todos</ion-label>
+      <ion-checkbox
+        slot="start"
+        #checkBox
+        [checked]="false"
+        (click)="selectAllServices()"
+      ></ion-checkbox>
+    </ng-template>
+  </ion-item>
+  <ng-container *ngFor="let service of serviceCollectionFiltered">
+    <ion-card
+      (click)="selectService(service)"
+      button="true"
+      [ngClass]="setSelectedClass(service)"
+    >
+      <ion-grid class="service-card">
+        <ion-row class="service-row">
+          <ion-col
+            size="0.1"
+            [style.background-color]="service?.color"
+          ></ion-col>
+          <ion-col size="11">
+            <ion-label class="service-label"
+              >{{ service.name }}
+              <span *ngIf="showPrice">· {{ service.price | formatPrice }}</span>
+              <p>{{ service.defaultDuration }} min</p>
+            </ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </ng-container>
+  <app-no-data
+    *ngIf="serviceCollectionFiltered.length === 0"
+    [title]="'Parece que aún no tienes servicios creados'"
+    [content]="false"
+  ></app-no-data>
+</ion-content>
+<ion-footer>
+  <ion-button
+    *ngIf="isConfigScreen"
+    [disabled]="selectedServices.length < 1"
+    color="dark"
+    (click)="dismiss(true)"
+    class="apply-button"
+    expand="block"
+    mode="ios"
+  >
+    Seleccionar servicio<span *ngIf="selectedServices.length > 1"
+      >s ({{ selectedServices.length }})</span
+    >
+  </ion-button>
+</ion-footer>

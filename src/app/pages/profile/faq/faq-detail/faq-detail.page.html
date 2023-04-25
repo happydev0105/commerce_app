@@ -1,0 +1,23 @@
+<app-header [backButton]="true" [titleCase]="false" [titlePage]="'Ayuda - ' + faqCategorySelected.name">
+</app-header>
+
+<ion-content>
+  <ion-searchbar (ionInput)="searchFAQ($event)" showCancelButton="focus" placeholder="Buscar"
+    cancelButtonText="Cancelar" animated></ion-searchbar>
+
+  <ion-accordion-group *ngFor="let faq of faqCollectionFiltered" [value]="faq.topic">
+    <ion-accordion>
+      <ion-item class="textbox" slot="header">
+        <ion-icon name="information-circle" slot="start"></ion-icon>
+        <p class="m-0">{{faq.topic}}</p>
+      </ion-item>
+      <div slot="content">
+        <ion-card>
+          <ion-card-content>
+            {{faq.content}}
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+</ion-content>

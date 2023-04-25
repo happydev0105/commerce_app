@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <div class="flex justify-center items-center">
+      <ion-img class="w-[100px]" src="assets/icon/yeasy-logo.svg"></ion-img>
+    </div>
+  </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="commerce">
+  <div class="main_div">
+    <div class="edit_image" (click)="selectCommerceImage('background')">
+      <ion-icon name="create-outline" color="white"></ion-icon>
+    </div>
+    <div id="commerceImage" class="image bg-cover bg-no-repeat h-48"
+      style.backgroundImage="linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.23)), url('{{commerce?.featureImage | getImage: 'commerce': commerce?.uuid}}')">
+    </div>
+
+    <div class="profile_div">
+      <div class="profile">
+        <div class="relative rounded-full h-32 w-32 object-cover shadow-lg" (click)="selectCommerceImage('logo')">
+          <img id="commerceLogo" src="{{commerce?.logo | getImage: 'commerce': commerce?.uuid}}"
+            class="rounded-full h-32 w-32 object-cover" />
+          <div class="absolute camera-icon bg-white">
+            <img src="assets/icon/camera.png" />
+          </div>
+        </div>
+        <ion-label color="dark" class="sub_heading">{{commerce?.name}}</ion-label>
+
+        <div class="rate"></div>
+        <ion-label>{{commerce?.type.toUpperCase()}}</ion-label>
+      </div>
+    </div>
+  </div>
+  <ion-list class="mt-[20vh]">
+    <ng-container *ngFor="let item of optionsFiltered">
+      <ion-item class="textbox" [ngClass]="(item?.hasAlert | async) ? 'border-1 border-red-400 border-solid':''"
+        *ngIf="authService.checkPermission(item.permission) || item.permission === 'none'" (click)="goTo(item)"
+        [disabled]="item.disabled">
+        <ion-icon [name]="item.icon" class="icon-option"></ion-icon>
+        <ion-label class="ion-text-wrap">
+          <h2>
+            {{item.name}}
+            <ion-icon class="text-red-500" *ngIf="item?.hasAlert | async" name="warning-outline"></ion-icon>
+          </h2>
+          <p>{{item.description}}</p>
+        </ion-label>
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-item>
+    </ng-container>
+    <ion-item class="textbox" (click)="goTo({path:'login', isExternal: false})">
+      <ion-icon [style.color]="'danger'" color="danger" name="log-out-outline" class="icon-option"></ion-icon>
+      <ion-label color="danger" class="ion-text-wrap">
+        <h2>Cerrar sesión</h2>
+        <p>Cierra tu sesión actual</p>
+      </ion-label>
+      <ion-icon color="danger" name="chevron-forward-outline"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>

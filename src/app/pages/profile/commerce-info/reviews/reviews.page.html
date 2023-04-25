@@ -1,0 +1,18 @@
+<app-header [backButton]="true" [titlePage]="'Mis reseñas'" [titleCase]="false"></app-header>
+
+
+<ion-content>
+  <ng-container *ngIf="reviewCollection?.length > 0; else noData">
+    <section class="review-page">
+      <ng-container *ngFor="let review of reviewCollection">
+        <div class="p-4">
+          <app-review-card [review]="review"></app-review-card>
+          <hr>
+        </div>
+      </ng-container>
+    </section>
+  </ng-container>
+</ion-content>
+<ng-template #noData>
+  <app-no-data [title]="'No tienes ninguna reseña por el momento'" [content]="false"></app-no-data>
+</ng-template>

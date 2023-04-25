@@ -1,0 +1,46 @@
+
+
+<ion-content fullscreen="true" [scrollY]="true">
+  <div class="absolute flex justify-between w-full p-8 mt-4 z-50">
+    <ion-icon
+      size="large"
+      (click)="close()"
+      class="text-red-500 bg-black rounded-full"
+      name="close-circle-outline"
+    ></ion-icon>
+    <ion-icon
+      (click)="save()"
+      size="large"
+      class="text-green-500 bg-black rounded-full"
+      name="checkmark-outline"
+    ></ion-icon>
+  </div>
+  <div class="cropper-wrapper absolute">
+    <image-cropper
+      [imageFile]="imageChangedEvent"
+      [imageURL]="imageURL"
+      [maintainAspectRatio]="true"
+      [containWithinAspectRatio]="containWithinAspectRatio"
+      [aspectRatio]="aspectRatio"
+      [resizeToWidth]="1440"
+      [allowMoveImage]="false"
+      [cropperMinWidth]="1440"
+      [onlyScaleDown]="true"
+      [roundCropper]="false"
+      [canvasRotation]="canvasRotation"
+      [imageQuality]="100"
+      [(transform)]="transform"
+      [alignImage]="'center'"
+      [style.display]="showCropper ? null : 'none'"
+      [hidden]="hidden"
+      backgroundColor="black"
+      format="jpeg"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded()"
+      (cropperReady)="cropperReady($event)"
+      (loadImageFailed)="loadImageFailed()"
+      [imageAltText]="'alternative image text'"
+    ></image-cropper>
+    <div *ngIf="loading" class="loader">Loading...</div>
+  </div>
+</ion-content>

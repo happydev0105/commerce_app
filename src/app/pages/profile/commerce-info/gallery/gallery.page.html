@@ -1,0 +1,68 @@
+<app-header
+  [titlePage]="'Galería de imágenes'"
+  [titleCase]="false"
+  [backButton]="true"
+></app-header>
+
+<ion-content>
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="dark" (click)="goToSelectImage()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-list>
+    <ion-reorder-group
+      [disabled]="false"
+      (ionItemReorder)="handleReorder($any($event),gallery.images)"
+    >
+      <div *ngFor="let image of gallery?.images">
+        <div
+          (click)="openViewDetail(image)"
+          class="flex flex-row items-center bg-white border border-gray-200 rounded-lg shadow max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+        >
+          <ion-reorder
+            slot="start"
+            *ngIf="gallery.images.length >1"
+          ></ion-reorder>
+          <img
+            class="object-cover w-1/2 rounded-t-lg h-48 md:h-auto md:w-48 md:rounded-none md:rounded-l-lg"
+            [src]="(image | getImage: 'commerce': commerce.uuid)"
+            alt=""
+          />
+        </div>
+      </div>
+    </ion-reorder-group>
+  </ion-list>
+
+  <ion-modal
+    id="open-modal-image-detail"
+    initialBreakpoint="0.90"
+    trigger="open-view-detail"
+  >
+    <ng-template>
+      <ion-content>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button color="dark" (click)="showConfirm()">
+              <ion-icon name="trash-outline" color="danger"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <div class="w-full h-full text-center">
+          <img
+            [src]="selectedImage | getImage: 'commerce': commerce?.uuid"
+            class="w-full object-contain"
+          />
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
+
+<app-alert
+  #deleteAlert
+  (actionEmitter)="alertBox($event)"
+  [title]="'¿Desea borrar esta imagen de la galería?'"
+>
+</app-alert>

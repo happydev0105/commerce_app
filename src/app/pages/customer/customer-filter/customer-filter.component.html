@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Filtros</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss(true)">
+        <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-radio-group mode="md" [(ngModel)]="customerFilter">
+    <ion-list-header>
+      <ion-label>Filtrar clientes por:</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>Nuevos (creado en los últimos 30 días)</ion-label>
+      <ion-radio slot="start" color="dark" value="new"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Fieles (+3 reservas)</ion-label>
+      <ion-radio slot="start" color="dark" value="faithful"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Inasistentes</ion-label>
+      <ion-radio slot="start" color="dark" value="non-attendant"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+
+
+</ion-content>
+<ion-footer>
+  <ion-button (click)="dismiss(false)" color="dark" class="apply-button" expand="block" mode="ios" >
+    Aplicar filtros
+  </ion-button>
+</ion-footer>

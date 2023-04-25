@@ -1,0 +1,317 @@
+<app-header [backButton]="true" [titlePage]="day"></app-header>
+<ion-content>
+  <form [formGroup]="hourForm">
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item
+            class="textbox"
+            [ngClass]="hourForm.controls['isAvailable'].value ? 'fill-input' : ''"
+          >
+            <ion-label>Disponible</ion-label>
+            <ion-toggle
+              formControlName="isAvailable"
+              (ionChange)="toogle($event)"
+              color="dark"
+            ></ion-toggle>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="6">
+          <ion-item
+            class="textbox"
+            id="checkin-input"
+            [disabled]="!isAvailable.value"
+            [ngClass]="hourForm.controls['checkin'].value ? 'fill-input' : ''"
+          >
+            <ion-label class="w-full max-w-none"
+              >Entrada
+              <span class="float-right"
+                >{{hourForm.controls['checkin'].value.split(':')[0] |
+                formatHour}}:{{hourForm.controls['checkin'].value.split(':')[1]
+                | formatHour}}</span
+              ></ion-label
+            >
+            <ion-input
+              type="hidden"
+              [value]="hourForm.controls['checkin'].value"
+            ></ion-input>
+            <ion-modal
+              id="checkin-modal"
+              trigger="checkin-input"
+              initialBreakpoint="0.5"
+              backdropBreakpoint="0.5"
+            >
+              <ng-template>
+                <ion-content>
+                  <ion-toolbar>
+                    <ion-title>Seleccione una hora</ion-title>
+                    <ion-buttons slot="end">
+                      <ion-button
+                        color="dark"
+                        (click)="dismissModal('checkin-modal')"
+                        >Aceptar
+                      </ion-button>
+                    </ion-buttons>
+                  </ion-toolbar>
+                  <ng-container *ngIf="isCommerce; else isEmployee">
+                    <app-time-selector
+                      id="checkin-commerce"
+                      [availableStartHour]="'0'"
+                      [availableEndHour]="'23'"
+                      [initialHour]="hourForm.controls['checkin'].value.split(':')[0]"
+                      [initialMinutes]="hourForm.controls['checkin'].value.split(':')[1]"
+                      (hourSelectedEmitter)="onChangeHour($event, 'checkin')"
+                    >
+                    </app-time-selector>
+                  </ng-container>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item
+            class="textbox"
+            [disabled]="!isAvailable.value"
+            id="departure-input"
+            [ngClass]="hourForm.controls['departure'].value ? 'fill-input' : ''"
+          >
+            <ion-label class="w-full max-w-none"
+              >Salida
+              <span class="float-right"
+                >{{hourForm.controls['departure'].value.split(':')[0] |
+                formatHour}}:{{hourForm.controls['departure'].value.split(':')[1]
+                | formatHour}}</span
+              ></ion-label
+            >
+            <ion-input
+              type="hidden"
+              [value]="hourForm.controls['departure'].value"
+            ></ion-input>
+            <ion-modal
+              id="departure-modal"
+              initialBreakpoint="0.5"
+              trigger="departure-input"
+              backdropBreakpoint="0.5"
+            >
+              <ng-template>
+                <ion-content>
+                  <ion-toolbar>
+                    <ion-title>Seleccione una hora</ion-title>
+                    <ion-buttons slot="end">
+                      <ion-button
+                        color="dark"
+                        (click)="dismissModal('departure-modal')"
+                        >Aceptar</ion-button
+                      >
+                    </ion-buttons>
+                  </ion-toolbar>
+                  <ng-container *ngIf="isCommerce; else isEmployeeDeparture">
+                    <app-time-selector
+                      id="departure-commerce"
+                      [availableStartHour]="'0'"
+                      [availableEndHour]="'23'"
+                      [initialHour]="hourForm.controls['departure'].value.split(':')[0]"
+                      [initialMinutes]="hourForm.controls['departure'].value.split(':')[1]"
+                      (hourSelectedEmitter)="onChangeHour($event, 'departure')"
+                    >
+                    </app-time-selector>
+                  </ng-container>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-item  (click)="addTurn = !addTurn" class="textbox">
+            <ion-label>Añadir descanso</ion-label>
+            <ion-button
+              [disabled]="!isAvailable.value"
+              *ngIf="!addTurn"
+              (click)="addTurn = !addTurn"
+              expand="block"
+              fill="clear"
+            >
+              <ion-icon slot="start" name="add"></ion-icon>
+            </ion-button>
+            <ion-button
+              *ngIf="addTurn"
+              (click)="addTurn = !addTurn"
+              expand="block"
+              fill="clear"
+            >
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-col>
+        <ion-col *ngIf="addTurn" size="6">
+          <ion-item
+            [disabled]="!isAvailable.value"
+            id="rest-start-input"
+            class="textbox"
+            [ngClass]="hourForm.controls['restStart'].value ? 'fill-input' : ''"
+          >
+            <ion-label class="w-full max-w-none"
+              >Inicio
+              <span class="float-right"
+                >{{hourForm.controls['restStart'].value.split(':')[0] |
+                formatHour}}:{{hourForm.controls['restStart'].value.split(':')[1]
+                | formatHour}}</span
+              ></ion-label
+            >
+            <ion-input
+              *ngIf="addTurn"
+              type="hidden"
+              [value]="hourForm.controls['restStart'].value"
+            ></ion-input>
+            <ion-modal
+              id="checkin-rest-start"
+              initialBreakpoint="0.5"
+              trigger="rest-start-input"
+              backdropBreakpoint="0.5"
+            >
+              <ng-template>
+                <ion-content>
+                  <ion-toolbar>
+                    <ion-title>Seleccione una hora</ion-title>
+                    <ion-buttons slot="end">
+                      <ion-button
+                        color="dark"
+                        (click)="dismissModal('checkin-rest-start')"
+                        >Aceptar</ion-button
+                      >
+                    </ion-buttons>
+                  </ion-toolbar>
+                  <app-time-selector
+                    id="rest-start-commerce"
+                    [availableStartHour]="hourForm.controls['checkin'].value.split(':')[0]"
+                    [availableEndHour]="hourForm.controls['departure'].value.split(':')[0]"
+                    [initialHour]="hourForm.controls['restStart'].value.split(':')[0] ? hourForm.controls['restStart'].value.split(':')[0] : hourForm.controls['checkin'].value.split(':')[0]"
+                    [initialMinutes]="hourForm.controls['restStart'].value.split(':')[1] ? hourForm.controls['restStart'].value.split(':')[1] : hourForm.controls['departure'].value.split(':')[1]"
+                    [isEnd]="true"
+                    [endedHour]="hourForm.controls['departure'].value.split(':')[0]"
+                    [endedMinutes]="hourForm.controls['departure'].value.split(':')[1]"
+                    (hourSelectedEmitter)="onChangeHour($event, 'restStart')"
+                  >
+                  </app-time-selector>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </ion-item> 
+        </ion-col>
+        <ion-col *ngIf="addTurn" size="6">
+          <ion-item
+            class="textbox"
+            [disabled]="!isAvailable.value ||hourForm.controls['restStart'].value === '' "
+            id="rest-end-input"
+            [ngClass]="hourForm.controls['restEnd'].value ? 'fill-input' : ''"
+          >
+            <ion-label class="w-full max-w-none"
+              >Fin
+              <span class="float-right"
+                >{{hourForm.controls['restEnd'].value.split(':')[0] |
+                formatHour}}:{{hourForm.controls['restEnd'].value.split(':')[1]
+                | formatHour}}</span
+              ></ion-label
+            >
+            <ion-input
+              *ngIf="addTurn"
+              type="hidden"
+              [value]="hourForm.controls['restEnd'].value"
+            ></ion-input>
+            <ion-modal
+              id="rest-end-modal"
+              initialBreakpoint="0.5"
+              trigger="rest-end-input"
+              backdropBreakpoint="0.5"
+            >
+              <ng-template>
+                <ion-content>
+                  <ion-toolbar>
+                    <ion-title>Seleccione una hora</ion-title>
+                    <ion-buttons slot="end">
+                      <ion-button
+                        color="dark"
+                        (click)="dismissModal('rest-end-modal')"
+                        >Aceptar</ion-button
+                      >
+                    </ion-buttons>
+                  </ion-toolbar>
+                  <app-time-selector
+                    id="rest-end-commerce"
+                    [availableStartHour]="'0'"
+                    [availableEndHour]="hourForm.controls['departure'].value.split(':')[0]"
+                    [initialHour]="hourForm.controls['restEnd'].value.split(':')[0] ? hourForm.controls['restEnd'].value.split(':')[0] : hourForm.controls['restStart'].value.split(':')[0]"
+                    [initialMinutes]="hourForm.controls['restEnd'].value.split(':')[1] ? hourForm.controls['restEnd'].value.split(':')[1] : hourForm.controls['departure'].value.split(':')[1]"
+                    [endedHour]="hourForm.controls['departure'].value.split(':')[0]"
+                    [isEnd]="true"
+                    [endedMinutes]="hourForm.controls['departure'].value.split(':')[1]"
+                    (hourSelectedEmitter)="onChangeHour($event, 'restEnd')"
+                  >
+                  </app-time-selector>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
+  <div *ngIf=" validateLogicHour()" class="w-full p-4 text-center text-red-400">
+    {{errorMessage}}
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button
+          class="btn"
+          [disabled]="!hourForm.valid && !isAvailable.value || validateLogicHour()"
+          (click)="presentAlertModal()"
+          expand="block"
+        >
+          Guardar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
+
+<ng-template #isEmployee>
+  <app-time-selector
+    id="checkin-employee"
+    [availableStartHour]="formatIsoDateTime(commerceTimeTable[day], 'start').split(':')[0]"
+    [availableEndHour]="formatIsoDateTime(commerceTimeTable[day], 'end').split(':')[0]"
+    [initialHour]="formatIsoDateTime(commerceTimeTable[day], 'start').split(':')[0]"
+    [initialMinutes]="formatIsoDateTime(commerceTimeTable[day], 'start').split(':')[1]"
+    [isEnd]="true"
+    [endedHour]="formatIsoDateTime(commerceTimeTable[day], 'end').split(':')[0]"
+    [endedMinutes]="formatIsoDateTime(commerceTimeTable[day], 'end').split(':')[1]"
+    (hourSelectedEmitter)="onChangeHour($event, 'checkin')"
+  >
+  </app-time-selector>
+</ng-template>
+
+<ng-template #isEmployeeDeparture>
+  <app-time-selector
+    id="departure-employee"
+    [availableStartHour]="formatIsoDateTime(commerceTimeTable[day], 'start').split(':')[0]"
+    [availableEndHour]="formatIsoDateTime(commerceTimeTable[day], 'end').split(':')[0]"
+    [initialHour]="formatIsoDate('departureHour').split(':')[0]"
+    [initialMinutes]="formatIsoDate('departureHour').split(':')[1]"
+    [isEnd]="true"
+    [endedHour]="formatIsoDateTime(commerceTimeTable[day], 'end').split(':')[0]"
+    [endedMinutes]="formatIsoDateTime(commerceTimeTable[day], 'end').split(':')[1]"
+    (hourSelectedEmitter)="onChangeHour($event, 'departure')"
+  >
+  </app-time-selector>
+</ng-template>

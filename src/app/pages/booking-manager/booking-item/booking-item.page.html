@@ -1,0 +1,242 @@
+<ion-content *ngIf="bookingData">
+  <div class="color-status" [ngClass]="[
+  bookingData.status === 'Pendiente' ? 'bg-[#e7b37d]' : '',
+  bookingData.status === 'Pendiente de pago' ? 'bg-[#888888]' : '',
+  bookingData.status === 'Realizada' ? 'bg-[#9bfab0]' : '',
+  bookingData.status === 'No asistida' ? 'bg-red-300' : '',
+  isIOS ? 'pt-4' : '' ]">
+    <div [ngClass]="isIOS ? 'pt-4' : ''" class="backBtn">
+      <ion-icon name="arrow-back" size="large" (click)="cancel()"> </ion-icon>
+    </div>
+    <div [ngClass]="isIOS ? 'pt-4' : ''" class="editBtn">
+      <ion-icon name="create-outline" size="large" (click)="editBooking()">
+      </ion-icon>
+    </div>
+    <div class="status">
+      <ion-label class="status-info uppercase">{{bookingData.status}}</ion-label>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="card">
+      <div class="logo">
+        <ion-item class="textbox" lines="none">
+          {{dateService.formatBookingTimetable( bookingData.startsHour,
+          bookingData.startsMinute, bookingData.duration)}}
+          <ion-label>|</ion-label>
+          {{bookingData.startsDay | date}}
+        </ion-item>
+        <div class="absolute right-8">
+          <ion-icon id="open-details-book" name="alert-circle-outline"></ion-icon>
+        </div>
+      </div>
+      <ion-popover trigger="open-details-book" triggerAction="click">
+        <ng-template>
+          <ion-content class="ion-padding">
+            <p>
+              Creada por {{bookingData.createdBy}} el {{bookingData.createdAt |
+              date : 'medium' }}
+            </p>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+      <ion-card (click)="goToDetail(bookingData?.customer)" button="true"
+        [disabled]="bookingData?.customer.isWalkingClient">
+        <ion-grid class="p-0">
+          <ion-row class="rounded-2xl">
+            <ion-col *ngIf="bookingData?.customer?.photoURL; else showInitialsAvatar" class="bg-white" size="3">
+              <img class="w-16 h-16 md:w-36 md:h-36 rounded-full"
+                [src]="bookingData?.customer?.photoURL | getImage:'customer':bookingData?.customer?.uuid" />
+            </ion-col>
+            <ion-col size="8" class="grid">
+              <div class="place-self-center w-full pl-3">
+                <ion-label class="customer-label">{{bookingData.customer?.name +'
+                  '+bookingData.customer?.lastname}}
+                  <p class="text-xs">{{ bookingData.customer?.phone }}</p>
+                </ion-label>
+              </div>
+            </ion-col>
+            <ion-col class="grid" size="1">
+              <div class="place-self-center">
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+
+      <div *ngIf="!bookingData.payment">
+        <ng-container *ngFor="let service of bookingData.service">
+          <ion-card button="true" class="h-12">
+            <ion-grid class="service-card">
+              <ion-row class="service-row h-12">
+                <ion-col size="0.1" [style.background-color]="service?.color"></ion-col>
+                <ion-col size="11" class="grid">
+                  <ion-label class="place-self-center w-full pl-3">
+                    {{ service.name }} · {{ service.defaultDuration }} min · {{
+                    service.price| formatPrice }}
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ng-container>
+      </div>
+
+      <div *ngIf="bookingData.payment">
+        <ng-container *ngFor="let service of bookingData.payment.paymentServices">
+          <ion-card button="true" class="h-12">
+            <ion-grid class="service-card">
+              <ion-row class="service-row h-12">
+                <ion-col size="0.1" [style.background-color]="service?.serviceColor"></ion-col>
+                <ion-col size="11" class="grid">
+                  <ion-label class="place-self-center w-full pl-3">
+                    {{ service.serviceName }} · {{ service.defaultDuration }}
+                    min · {{service.servicePrice + (service.serviceDecimal /
+                    100) | formatPrice }}
+                    <span *ngIf="service.quantity > 1">
+                      - {{service.quantity}} unidades</span>
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ng-container>
+
+        <ng-container *ngFor="let product of bookingData.payment.paymentProducts">
+          <ion-card button="true" class="h-12">
+            <ion-grid class="service-card">
+              <ion-row class="service-row h-12">
+                <ion-col size="0.1" class="black"></ion-col>
+                <ion-col class="no-padding grid">
+                  <ion-item>
+                    <ion-label class="place-self-center w-full">
+                      {{ product?.productName}} · {{(product.productPrice +
+                      (product.productDecimal / 100) * product.quantity) |
+                      formatPrice}} - {{product?.quantity}}
+                      unidad{{product?.quantity > 1 ? 'es' : ''}}</ion-label>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="bookingData && !bookingData.payment; else paymentEmployee">
+        <ion-item class="textbox">
+          <ion-avatar slot="start">
+            <img src="{{bookingData.asignedTo.image | getImage:'employee':bookingData.asignedTo.uuid}}" />
+          </ion-avatar>
+          <ion-label class="employee-label">{{bookingData.asignedTo.name}}
+            {{bookingData.asignedTo.surname}}</ion-label>
+        </ion-item>
+      </ng-container>
+      <ng-template #paymentEmployee>
+        <ion-item class="textbox">
+          <ion-avatar slot="start">
+            <img
+              src="{{bookingData?.payment?.employee?.image | getImage:'employee':bookingData?.payment?.employee.uuid}}" />
+          </ion-avatar>
+          <ion-label class="employee-label">{{bookingData?.payment?.employee?.name}}
+            {{bookingData?.payment?.employee?.surname}}</ion-label>
+        </ion-item>
+      </ng-template>
+
+      <ng-container *ngIf="bookingData.payment">
+        <ion-item class="textbox">
+          <ion-icon slot="start" name="cash-outline"></ion-icon>
+          <ion-label class="employee-label">{{bookingData.payment?.method.label}}
+            <p class="text-xs">
+              {{bookingData.payment.createdAt | date:'dd-MM-YYYY HH:mm'}}
+            </p>
+          </ion-label>
+        </ion-item>
+      </ng-container>
+
+      <ng-container *ngIf="bookingData.message">
+        <ion-card button="true">
+          <div class="p-4">
+            <ion-label class="service-label">Mensaje del cliente: </ion-label>
+          </div>
+
+          <div class="p-4">
+            <ion-label class="service-label ion-text-right">{{bookingData.message}}
+            </ion-label>
+          </div>
+        </ion-card>
+      </ng-container>
+      <ng-container *ngIf="bookingData.note">
+        <ion-card button="true">
+          <ion-grid class="service-card">
+            <ion-row class="service-row p-1" style="align-items: baseline">
+              <ion-col size="5">
+                <ion-label class="service-label">Nota del comercio: </ion-label>
+              </ion-col>
+              <ion-col size="7">
+                <ion-label class="service-label ion-text-right">
+                  {{bookingData.note}}
+                </ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ng-container>
+    </div>
+  </div>
+</ion-content>
+<app-alert #deleteAlert (actionEmitter)="alertBox($event)" [title]="'¿Desea borrar esta reserva?'"></app-alert>
+<app-alert-non-attended #NonAttended (actionEmitter)="alertBoxNonAttended($event)"
+  [title]="'¿Marcar como inasistencia?'">
+</app-alert-non-attended>
+<ng-template #showInitialsAvatar>
+  <app-avatar-initials [name]="bookingData?.customer?.name"
+    [surname]="bookingData?.customer?.lastname"></app-avatar-initials>
+</ng-template>
+<ion-footer class="ion-no-border" *ngIf="bookingData">
+  <ion-grid>
+    <ion-row class="ion-justify-content-start padding-right">
+      <ion-col size="6">
+        <ion-item>
+          <ion-label>
+            <h3>Total: {{totalPrice | formatPrice}}</h3>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <ion-col *ngIf="!isPayed">
+        <ion-item>
+          <ion-label class="align-end">
+            <h3>Pendiente: {{totalPrice | formatPrice}}</h3>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col *ngIf="isPayed" size="6">
+        <ion-button class="btn " expand="block" color="danger" (click)="deletePayment()">
+          Eliminar cobro
+        </ion-button>
+      </ion-col>
+      <ion-col *ngIf="isPayed" size="6">
+        <ion-button class="btn" expand="block" (click)="editPayment()">
+          Editar cobro
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="2" *ngIf="!isPayed" (click)="openAlert()">
+        <ion-button class="btn" expand="block">
+          <ion-icon icon="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col size="4" *ngIf="!isPayed && bookingData.status !== 'No asistida' && bookingData.status !== 'Finalizada' "
+        (click)="openAlertNonAttendant()">
+        <ion-button class="btn" expand="block"> Inasistencia </ion-button>
+      </ion-col>
+      <ion-col *ngIf="!isPayed && bookingData.status !== 'Finalizada' && bookingData.status !== 'No asistida' ">
+        <ion-button class="btn" (click)="payBooking()" expand="block">
+          Cobrar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

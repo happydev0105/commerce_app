@@ -1,0 +1,49 @@
+<app-header [backButton]="true" [titlePage]="title"></app-header>
+
+<ion-content>
+  <div class="edit_profile_main_content">
+    <form [formGroup]="methodForm">
+      <ion-item
+        class="textbox"
+        [ngClass]="methodForm.controls['label'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Nombre</ion-label>
+        <ion-input
+          formControlName="label"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="text"
+          [value]="method?.label"
+          autocapitalize="true"
+        ></ion-input>
+      </ion-item>
+    </form>
+  </div>
+</ion-content>
+<app-alert
+  #deleteAlert
+  (actionEmitter)="alertBox($event)"
+  [title]="'¿Desea borrar este método de pago?'"
+></app-alert>
+<ion-footer class="ion-no-border">
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngIf="isEdit" (click)="openAlert()"
+        ><ion-button class="btn" expand="block">
+          <ion-icon icon="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col
+        ><ion-button
+          class="btn"
+          [disabled]="!methodForm.valid"
+          (click)="submit()"
+          expand="block"
+        >
+          Guardar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

@@ -1,0 +1,22 @@
+<app-header [titlePage]="'Política de privacidad'" [backButton]="true" [titleCase]="false"></app-header>
+
+<ion-content>
+  <ion-searchbar (ionInput)="searchRGPD($event)" showCancelButton="focus" placeholder="Buscar"
+    cancelButtonText="Cancelar" animated></ion-searchbar>
+
+  <ion-accordion-group *ngFor="let rgpd of rgpdCollectionFiltered" [value]="rgpd.title">
+    <ion-accordion >
+      <ion-item class="textbox" slot="header">
+        <ion-icon name="information-circle" slot="start"></ion-icon>
+        <ion-label>{{rgpd.title}}</ion-label>
+      </ion-item>
+      <div slot="content">
+        <ion-card>
+          <ion-card-content>
+            {{rgpd.content}}
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+</ion-content>

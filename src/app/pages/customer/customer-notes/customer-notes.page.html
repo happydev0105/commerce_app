@@ -1,0 +1,49 @@
+<app-header [backButton]="true" [titlePage]="'Observaciones'"></app-header>
+<ion-content>
+  <ion-list
+    class="p-4"
+    *ngIf="(customerNotes | async)?.length > 0; else nodata"
+  >
+    <ion-item
+      class="my-2 box-shadow rounded-md"
+      *ngFor="let note of customerNotes | async"
+    >
+      <div class="flex items-center space-x-4 w-full">
+        <div class="flex-shrink-0">
+          <ion-icon name="reader-outline" size="large"></ion-icon>
+        </div>
+        <div class="flex-1 min-w-0 my-2">
+          <ion-icon
+            class="float-right action-icons"
+            name="trash"
+            (click)="presentRemoveAlert(note)"
+          ></ion-icon>
+          <ion-icon
+            class="float-right action-icons"
+            name="create-outline"
+            (click)="addNote(note)"
+          ></ion-icon>
+          <p class="my-2 text-sm text-gray-500">{{note.note}}</p>
+          <div class="w-full">
+            <span>{{note.author.name}} {{note.author?.surname}}</span>
+            <span class="float-right"
+              >{{note.createdAt | date: 'dd-MM-yyyy HH:ss'}}</span
+            >
+          </div>
+        </div>
+      </div>
+    </ion-item>
+  </ion-list>
+  <ng-template #nodata>
+    <app-no-data
+      class="ion-text-center"
+      [title]="'Este cliente no tiene ninguna observación creada. Puedes crear una haciendo click en el boton + inferior'"
+      [content]="false"
+    ></app-no-data>
+  </ng-template>
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="dark" (click)="addNote()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

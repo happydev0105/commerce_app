@@ -1,0 +1,46 @@
+ion-list-header {
+  margin-bottom: 20px;
+}
+
+.iconito {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.active {
+  background-color: rgb(15, 192, 15);
+  animation: pulse 1500ms infinite;
+}
+
+.text-active {
+  color: rgb(15, 192, 15);
+}
+
+.text-inactive {
+  color: red;
+}
+
+.inactive {
+  background-color: red;
+}
+
+.view-details {
+  width: 50%;
+  margin: 0 auto
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: rgb(15, 192, 15) 0 0 0 0;
+  }
+  75% {
+    box-shadow: #ff69b400 0 0 0 16px;
+  }
+}
+
+.f-right {
+  float: right;
+}

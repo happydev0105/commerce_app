@@ -1,0 +1,292 @@
+<app-header [backButton]="true" [titlePage]="title"></app-header>
+
+<ion-content fullscreen="true" [scrollEvents]="true">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <ion-card button="true" [disabled]="isWalkinClient">
+      <ion-input
+        ngDefaultControl
+        type="hidden"
+        formControlName="customer"
+        class="ion-text-right"
+      ></ion-input>
+      <ion-grid class="customer-card" (click)="presentModal()">
+        <ion-row class="customer-row">
+          <ion-col class="customer-image" size="3">
+            <img class="p-4" src="assets/no-image.jpeg" />
+          </ion-col>
+          <ion-col size="8">
+            <ion-label *ngIf="!customerSelected" class="customer-label"
+              >Selecciona cliente</ion-label
+            >
+            <ion-label *ngIf="customerSelected" class="customer-label"
+              >{{customerSelected.name +'
+              '+customerSelected.lastname}}</ion-label
+            >
+          </ion-col>
+          <ion-col size="1">
+            <div class="icon-container">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+    <ion-item class="textbox">
+      <ion-label slot="start">Cliente sin cita previa</ion-label>
+      <ion-checkbox
+        slot="end"
+        (ionChange)="onChangeCheckbox($event)"
+        [(ngModel)]="isWalkinClient"
+        [ngModelOptions]="{standalone: true}"
+      ></ion-checkbox>
+    </ion-item>
+    <ion-item
+      style="margin-bottom: 0"
+      *ngIf="latestServiceCollection?.length > 0"
+      (click)="addLatestService()"
+      class="textbox"
+      no-lines
+      lines="none"
+    >
+      <ion-label class="no-padding"
+        >Repetir último servicio: {{latestServiceCollection[0].name}}</ion-label
+      >
+      <ion-button fill="clear">
+        <ion-icon name="refresh-outline" slot="end"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-grid fixed class="no-padding">
+      <ion-row class="no-padding">
+        <ion-col class="no-padding" size="12">
+          <ion-item
+            style="margin-bottom: 0"
+            (click)="presentServiceModal()"
+            class="textbox"
+            no-lines
+            lines="none"
+          >
+            <ion-label class="no-padding">Añadir servicio</ion-label>
+            <ion-button fill="clear">
+              <ion-icon slot="end" name="add"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ng-container *ngFor="let service of serviceSelected">
+      <ion-card button="true">
+        <ion-grid class="service-card">
+          <ion-row class="service-row">
+            <ion-col
+              size="0.1"
+              [style.background-color]="service?.color"
+            ></ion-col>
+            <ion-col class="no-padding">
+              <ion-item>
+                <ion-label class="service-label">
+                  <span
+                    >{{ service.name }} · {{ service.price | formatPrice
+                    }}</span
+                  >
+                  <!-- <p>14:45 - 15:15 · 30 min</p> -->
+                </ion-label>
+                <ion-button fill="clear" (click)="deleteService(service)">
+                  <ion-icon slot="end" name="trash-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </ng-container>
+
+    <div class="p-0" id="open-start-days">
+      <ion-item mode="ios" class="textbox">
+        <ion-label mode="ios" class="w-full max-w-none"
+          >Fecha Inicio
+          <span class="float-right"
+            >{{dateService.formatDateLanguage(form.controls['startDay'].value,
+            locale)}}</span
+          >
+        </ion-label>
+        <ion-input
+          type="hidden"
+          class="hidden"
+          [value]="dateService.formatDateLanguage(form.controls['startDay'].value, locale)"
+        ></ion-input>
+        <ion-modal
+          id="open-modal-calendar"
+          
+          initialBreakpoint="0.50"
+          trigger="open-start-days"
+        >
+          <ng-template>
+            <ion-content>
+              <ion-toolbar>
+                <ion-title>Fecha inicio</ion-title>
+              </ion-toolbar>
+              <ion-datetime
+                #datetime
+                first-day-of-week="1"
+                locale="es-ES"
+                (ionChange)="dateChanged(datetime.value)"
+                presentation="date"
+                size="cover"
+                formControlName="startDay"
+              >
+              </ion-datetime>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+    </div>
+
+    <ion-grid class="p-0">
+      <ion-row class="textbox">
+        <ion-col class="p-0" id="start-hour">
+          <ion-item class="date-item border-r-2" (click)="openPickerStartHour()">
+            <ion-label class="w-full max-w-none"
+              >Hora inicio
+              <span class="float-right"
+                >{{form.controls['startHour'].value.split(':')[0] |
+                formatHour}}:{{form.controls['startHour'].value.split(':')[1] |
+                formatHour}}</span
+              ></ion-label
+            >
+            <ion-input
+              type="hidden"
+              class="ion-text-right"
+              [value]="form.controls['startHour'].value "
+            >
+            </ion-input>
+     
+          </ion-item>
+        </ion-col>
+
+        <ion-col class="p-0" id="end-hour">
+          <ion-item class="date-item"  (click)="openPickerEndHour()">
+            <ion-label class="w-full max-w-none"
+              >Hora final
+              <span class="float-right"
+                >{{form.controls['endHour'].value.split(':')[0] |
+                formatHour}}:{{form.controls['endHour'].value.split(':')[1] |
+                formatHour}}</span
+              ></ion-label
+            >
+            <ion-input
+              type="hidden"
+              class="ion-text-right"
+              [value]="form.controls['endHour'].value "
+            >
+            </ion-input>
+           
+          </ion-item>
+          
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div class="px-4" >
+      <ion-text color="danger" *ngIf="endHour.errors?.invalid">
+        <p class="ion-no-margin"><sub>La hora de salida debe ser posterior</sub></p>
+      </ion-text>
+     
+    </div>
+    <ion-item
+      class="textbox"
+      no-lines
+      lines="none"
+      *ngIf="employeeCollection?.length > 0"
+    >
+      <ion-label>Selecciona un empleado</ion-label>
+      <ion-select
+        #employee
+        formControlName="employee"
+        interface="action-sheet"
+        (ionChange)="selectedEmployee(employee.value)"
+        cancelText="Cancelar"
+      >
+        <ion-select-option
+          *ngFor="let employee of employeeCollection"
+          [value]="employee.uuid"
+          >{{employee.name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ng-container *ngIf="!isAvailable">
+      <div class="px-8">
+        <p class="text-red-300">
+          El empleado elegido tiene ocupada la hora seleccionada
+        </p>
+      </div>
+    </ng-container>
+    <ion-item mode="ios" class="textbox" no-lines lines="none">
+      <ion-grid>
+        <ion-row>
+          <ion-label class="correct-possition" mode="ios">Nota </ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-textarea
+            mode="ios"
+            ngDefaultControl
+            formControlName="note"
+            type="text"
+            placeholder="Solo visible para el comercio"
+            autocapitalize="true"
+          ></ion-textarea>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item mode="ios" class="textbox" no-lines lines="none">
+      <ion-grid>
+        <ion-row>
+          <ion-label class="correct-possition" mode="ios">Mensaje</ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-textarea
+            mode="ios"
+            ngDefaultControl
+            autocapitalize="true"
+            formControlName="message"
+            type="text"
+            placeholder="Mensaje para el cliente"
+          ></ion-textarea>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </form>
+  <ion-grid>
+    <ion-row
+      class="ion-justify-content-end padding-right"
+      *ngIf="totalPrice !== '0 €'"
+    >
+      <ion-item>
+        <h3 class="ion-text-end" [innerText]="totalPrice"></h3>
+      </ion-item>
+    </ion-row>
+
+    <ion-row>
+      <ion-col *ngIf="isEdit" (click)="openAlert()">
+        <ion-button class="btn" expand="block">
+          <ion-icon icon="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col>
+
+        <ion-button
+          (click)="onSubmit()"
+          [disabled]=" form.controls['endHour'].errors || serviceSelected.length < 1 || !form.controls['employee'].value || !checkIfCustomer()"
+          class="btn"
+          expand="block"
+        >
+          Guardar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<app-alert
+  #deleteAlert
+  (actionEmitter)="alertBox($event)"
+  [title]="'¿Desea borrar?'"
+></app-alert>

@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Filtros</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss(true)">
+        <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-radio-group mode="md" [(ngModel)]="ticketStatusFilter">
+    <ion-list-header>
+      <ion-label>Filtrar chats por estado:</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>Pendientes </ion-label>
+      <ion-radio slot="start" color="dark" value="pending"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>En curso</ion-label>
+      <ion-radio slot="start" color="dark" value="in_progress"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Finalizados</ion-label>
+      <ion-radio slot="start" color="dark" value="finished"></ion-radio>
+    </ion-item>
+    <hr>
+    <ion-item>
+      <ion-label>Todos</ion-label>
+      <ion-radio slot="start" color="dark" value="all"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+
+
+</ion-content>
+<ion-footer>
+  <ion-button (click)="dismiss(false)" color="dark" class="apply-button" expand="block" mode="ios" >
+    Aplicar filtros
+  </ion-button>
+</ion-footer>

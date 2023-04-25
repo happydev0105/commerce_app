@@ -1,0 +1,83 @@
+h2 {
+  margin: 0;
+}
+
+.icon-option {
+  margin-right: 10px;
+}
+ion-toolbar {
+  --border-width: 0 !important;
+}
+.no-shadow {
+  box-shadow: none;
+}
+
+.profile_div {
+  position: absolute;
+  top: 14.5vh;
+  width: 100%;
+  z-index: 1;
+  .profile {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+    ion-buttons {
+      position: absolute;
+      right: 20px;
+      top: 40px;
+    }
+    ion-thumbnail {
+      border: 1% solid #f4f4f4;
+      height: 15vh;
+      width: 15vh;
+      --border-radius: 50%;
+    }
+    .sub_heading {
+      margin: 20px 0px 5px 0px;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .rate {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 5px;
+      ion-icon {
+        color: #fdb558;
+        margin-left: 5px;
+      }
+      ion-label {
+        margin-left: 10px;
+      }
+    }
+    .content_button {
+      height: 30px;
+      width: max-content;
+    }
+  }
+}
+
+.edit_image {
+  position: absolute;
+  right: 5%;
+  z-index: 1000;
+  color: white;
+  top: 2%;
+  ion-icon {
+    font-size: 28px;
+  }
+}
+
+.camera-icon {
+  right: 0;
+  top: 5.5rem;
+  border: 1px solid black;
+  border-radius: 999999999999px;
+  padding: 5px;
+  width: 32px;
+  height: 32px;
+}
+

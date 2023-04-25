@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Productos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss(false)">
+        <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar (ionInput)="searchProduct($event)" showCancelButton="focus" placeholder="Buscar"
+    cancelButtonText="Cancelar" animated></ion-searchbar>
+
+  <ion-grid fixed style="border-top: 1px solid lightgray; border-bottom: 1px solid lightgray">
+    <ion-row>
+      <ion-col style="border-right: 1px solid lightgray">
+        <ion-item>
+          <ion-label *ngIf="productCollectionFiltered.length === 1">{{ productCollectionFiltered.length }} Producto</ion-label>
+          <ion-label *ngIf="productCollectionFiltered.length > 1">{{ productCollectionFiltered.length }} Productos</ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ng-container *ngFor="let product of productCollectionFiltered; let i = index">
+    <ion-card [disabled]="product.qty < 1" button="true" class="card" button="true" [ngClass]="setSelectedClass(product)" id="{{'card_'+i}}">
+      <ion-grid class="product-card">
+        <ion-row class="product-row">
+          <ion-col size="0.1" class="black"></ion-col>
+          <ion-col class="no-padding">
+            <ion-item>
+              <ion-label class="service-label">
+                {{ product?.name }} · {{ product.price + (product.decimal / 100) | formatPrice }}
+              </ion-label>
+              <div class="text-red-500 flex" *ngIf="product.qty === 0">
+                <ion-icon class="text-red-500 self-center mr-1" name="close-circle-outline"></ion-icon>
+                <span>Producto sin stock</span>
+              </div>
+               <ion-select [id]="product.uuid" [value]="setSelectOptionValue(product)" (ionChange)="onChangeValue($event, product, i)" okText="Aceptar" cancelText="Cancelar">
+                <ion-select-option *ngFor="let unit of qtyProductCollection[i]" [value]="unit">{{unit}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </ng-container>
+  <app-no-data *ngIf="productCollectionFiltered.length === 0" [title]="'Parece que aún no tienes productos'" [content]="false"></app-no-data>
+</ion-content>
+<ion-footer>
+  <ion-button [disabled]="productSelected.length === 0" color="dark" (click)="dismiss(true)" class="apply-button"
+    expand="block" mode="ios">
+    Seleccionar producto<span *ngIf="productSelected.length > 1">s ({{productSelected.length}})</span>
+  </ion-button>
+</ion-footer>

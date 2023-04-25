@@ -1,0 +1,64 @@
+<app-header [titlePage]="title" [backButton]="true"></app-header>
+
+<ion-content>
+  <div class="edit_profile_main_content">
+    <form [formGroup]="productForm">
+
+      <ion-item class="textbox" [ngClass]="productForm.controls['name'].value ? 'fill-input' : ''">
+        <ion-label>Nombre</ion-label>
+        <ion-input formControlName="name" (ionFocus)="onFocus($event)" (ionBlur)="onBlur($event)" type="text"
+          [value]="product?.name" autocapitalize="true" class="ion-text-right" [maxlength]="30"></ion-input>
+      </ion-item>
+
+      <ion-item class="textbox" [ngClass]="productForm.controls['reference'].value ? 'fill-input' : ''">
+        <ion-label>Referencia</ion-label>
+        <ion-input formControlName="reference" (ionFocus)="onFocus($event)" (ionBlur)="onBlur($event)" type="text"
+          [value]="product?.reference" autocapitalize="true" class="ion-text-right" [maxlength]="30"></ion-input>
+      </ion-item>
+
+      <ion-item class="textbox" [ngClass]="productForm.controls['description'].value ? 'fill-input' : ''">
+        <ion-label>Descripción</ion-label>
+        <ion-input formControlName="description" (ionFocus)="onFocus($event)" (ionBlur)="onBlur($event)" type="text"
+          [value]="product?.description" autocapitalize="true" class="ion-text-right"></ion-input>
+      </ion-item>
+
+      <ion-item class="textbox" [ngClass]="productForm.controls['price'].value ? 'fill-input' : ''">
+        <ion-label>Precio</ion-label>
+        <ion-input formControlName="price" (ionFocus)="onFocus($event)" (ionBlur)="onBlur($event)" type="number"
+          (ionChange)="formatPrice($event)" [value]="product?.price" class="ion-text-right" inputmode="decimal"
+          placeholder="0"></ion-input>
+      </ion-item>
+
+      <ion-item class="textbox" [ngClass]="productForm.controls['qty'].value ? 'fill-input' : ''">
+        <ion-label>Unidades</ion-label>
+        <ion-input formControlName="qty" (ionFocus)="onFocus($event)" (ionBlur)="onBlur($event)" type="number"
+            (ionChange)="onChange($event)" min="0" max="100"[value]="product?.qty" class="ion-text-right" inputmode="numeric"
+            placeholder="0"></ion-input>
+
+      </ion-item>
+ <div class="px-4" *ngIf="qty.invalid && qty.touched">
+        <ion-text color="danger" *ngIf="qty.errors.max">
+          <p class="ion-no-margin"><sub>Maximo 100 unidades.</sub></p>
+        </ion-text>
+       
+      </div>
+    </form>
+  </div>
+
+</ion-content>
+<app-alert #deleteAlert [title]="'¿Desea borrar este producto?'" (actionEmitter)="alertBox($event)"></app-alert>
+<ion-footer class="ion-no-border">
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngIf="isEdit" (click)="openAlert()"><ion-button class="btn" expand="block">
+          <ion-icon icon="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col><ion-button class="btn" [disabled]="!productForm.valid" (click)="submit()" expand="block">
+          Guardar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

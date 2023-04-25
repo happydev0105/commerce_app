@@ -1,0 +1,327 @@
+<app-header
+  [backButton]="true"
+  [titlePage]="employee ? 'Editar empleado': 'Crear empleado'"
+></app-header>
+
+<ion-content>
+  <div class="edit_profile_main_content">
+    <form [formGroup]="employeeForm">
+      <div class="user_image bg_image" (click)="getImage()">
+        <img
+          *ngIf="employee"
+          #employeeLogo
+          class="img"
+          src="{{employee?.image | getImage:'employee':employee?.uuid}}"
+        />
+
+        <img *ngIf="!employee" class="img" #employeeLogo [src]="image" />
+        <div class="absolute w-1/4 mt-[-25px] camera-icon rounded-full">
+          <ion-icon
+            class="float-right bg-white rounded-full text-lg p-[0.2rem]"
+            name="camera-outline"
+          ></ion-icon>
+        </div>
+      </div>
+      <ion-item
+        *ngIf="employee?.isAmbassador"
+        (click)="copyToClipboard()"
+        class="mt-2 w-full"
+      >
+        <div
+          class="bg-gray-100 w-full text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded mr-2 border border-gray-500"
+        >
+          <div class="flex justify-between w-full">
+            <p class="m-0">
+              <ion-icon name="star-outline"></ion-icon> Código embajador:
+            </p>
+            <p class="m-0">{{employee?.ambassadorCode}}</p>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item
+        class="textbox"
+        [ngClass]="employeeForm.controls['name'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Nombre</ion-label>
+        <ion-input
+          formControlName="name"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="text"
+          [value]="employee?.name"
+          autocapitalize="true"
+          class="ion-text-right"
+          [maxlength]="20"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        [ngClass]="employeeForm.controls['surname'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Apellidos</ion-label>
+        <ion-input
+          formControlName="surname"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="text"
+          [value]="employee?.surname"
+          autocapitalize="true"
+          class="ion-text-right"
+          [maxlength]="20"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        [ngClass]="employeeForm.controls['email'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Email</ion-label>
+        <ion-input
+          formControlName="email"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="email"
+          [value]="employee?.email"
+          class="ion-text-right"
+          [maxlength]="150"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        [ngClass]="employeeForm.controls['phone'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Teléfono</ion-label>
+        <ion-intl-tel-input
+          class="ion-text-right absolute right-[7px] float-right w-1/2"
+          [enableAutoCountrySelect]="true"
+          [defaultCountryiso]="'es'"
+          [maxLength]="'9'"
+          [preferredCountries]="['es']"
+          [modalSearchPlaceholder]="'Buscar...'"
+          [modalCloseText]="'Cerrar'"
+          formControlName="phone"
+          [inputPlaceholder]="'600 123 456'"
+          modalTitle="Seleccione país"
+        ></ion-intl-tel-input>
+      </ion-item>
+
+      <div class="px-4" *ngIf="phoneNumber.invalid && phoneNumber.touched">
+        <ion-text color="danger" *ngIf="phoneNumber.errors.required">
+          <p class="ion-no-margin"><sub>El teléfono es requerido</sub></p>
+        </ion-text>
+        <ion-text color="danger" *ngIf="phoneNumber.errors.phone">
+          <p class="ion-no-margin"><sub>El teléfono no es válido.</sub></p>
+        </ion-text>
+      </div>
+      <ion-item
+        class="textbox"
+        [ngClass]="employeeForm.controls['position'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Puesto</ion-label>
+        <ion-input
+          formControlName="position"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="text"
+          [value]="employee?.position"
+          autocapitalize="true"
+          class="ion-text-right"
+          [maxlength]="50"
+        ></ion-input>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        [ngClass]="employeeForm.controls['description'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Descripción</ion-label>
+        <ion-textarea
+          formControlName="description"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          type="text"
+          [value]="employee?.description"
+          autocapitalize="true"
+          class="ion-text-right"
+          [maxlength]="100"
+        ></ion-textarea>
+      </ion-item>
+
+      <ion-item
+        *ngIf="!employee?.isOwner"
+        class="textbox"
+        [ngClass]="employeeForm.controls['isActive'].value ? 'fill-input' : ''"
+      >
+        <ion-label>Disponible</ion-label>
+        <ion-toggle formControlName="isActive" color="dark"></ion-toggle>
+      </ion-item>
+
+      <ion-item *ngIf="employee && employee.isOwner" class="textbox">
+        <ion-label>¿Es trabajador?</ion-label>
+        <ion-toggle formControlName="isEmployee" color="dark"></ion-toggle>
+      </ion-item>
+
+      <ion-item
+        class="textbox"
+        button="true"
+        [ngClass]="employeeForm.controls['role'].value ? 'fill-input' : ''"
+        (click)="goToSelectRole()"
+      >
+        <ion-label>Nivel de permiso</ion-label>
+        <ion-input
+          hidden
+          type="text"
+          formControlName="role"
+          (ionFocus)="onFocus($event)"
+          (ionBlur)="onBlur($event)"
+          [value]="employee?.role"
+          class="ion-text-right"
+        >
+        </ion-input>
+        <ion-label slot="end">{{selectedRole.name}}</ion-label>
+      </ion-item>
+
+      <ion-row *ngIf="isEmployee && selectedRole.value !== 'recepcionista'" style="align-items: center">
+        <ion-col size="6" class="no-padding">
+          <ion-item (click)="presentServiceModal()" class="textbox">
+            <ion-label style="margin-right: 0" class="no-padding"
+              >Añadir servicio</ion-label
+            >
+            <ion-button fill="clear">
+              <ion-icon slot="end" name="add"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ng-container *ngIf="isEmployee && selectedRole.value !== 'recepcionista'">
+        <ion-accordion-group
+          inset="true"
+          *ngIf="serviceSelected.length > 0"
+          value="services"
+          (ionChange)="changeAccordion($event, 'services')"
+        >
+          <ion-accordion value="services">
+            <ion-item class="textbox" slot="header">
+              <ion-label
+                >{{servicesText}}
+                <span style="font-size: 16px"
+                  >({{serviceSelected.length}})</span
+                ></ion-label
+              >
+            </ion-item>
+            <div slot="content" *ngFor="let service of serviceSelected">
+              <ion-card button="true" class="h-12">
+                <ion-grid class="service-card">
+                  <ion-row class="service-row h-12">
+                    <ion-col
+                      size="0.1"
+                      [style.background]="service.color"
+                    ></ion-col>
+                    <ion-col class="no-padding grid">
+                      <ion-item>
+                        <ion-label class="place-self-center w-full pl-3"
+                          >{{ service.name }} · {{ service.defaultDuration }}
+                          min · {{ service.price| formatPrice }}</ion-label
+                        >
+                        <ion-button
+                          fill="clear"
+                          (click)="deleteService(service)"
+                        >
+                          <ion-icon slot="end" name="trash-outline"></ion-icon>
+                        </ion-button>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-card>
+            </div>
+          </ion-accordion>
+        </ion-accordion-group>
+      </ng-container>
+    </form>
+
+    <ion-accordion-group
+      *ngIf="isEmployee"
+      (ionChange)="changeAccordion($event, 'timetable')"
+    >
+      <ion-accordion value="timetable">
+        <ion-item class="textbox" slot="header">
+          <ion-label>{{timetableText}}</ion-label>
+        </ion-item>
+
+        <form [formGroup]="timeTableForm" slot="content">
+          <ion-grid fixed>
+            <ion-list *ngIf="timeTableFromCommerce">
+              <ion-row *ngFor="let day of weekDays">
+                <ion-item
+                  class="textbox hour-list"
+                  style="width: 100%"
+                  [disabled]="timeTableFromCommerce[day]?.start?.hour === null "
+                  (click)="goToHourDayDetail(day)"
+                >
+                  <ion-col class="no-padding" size="3">
+                    <ion-label class="no-padding"
+                      >{{day | translateDays | titlecase}}</ion-label
+                    >
+                  </ion-col>
+                  <ion-col size="8">
+                    <ion-label *ngIf="timeTableForm.controls[day].value">
+                      {{timeTableForm.controls['checkinTime'+day].value
+                      }}{{timeTableForm.controls['departureTime'+day].value }}
+                    </ion-label>
+                    <ion-label *ngIf="!timeTableForm.controls[day].value">
+                      Cerrado
+                    </ion-label>
+                  </ion-col>
+                  <ion-col size="1">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                  </ion-col>
+                </ion-item>
+              </ion-row>
+            </ion-list>
+          </ion-grid>
+        </form>
+      </ion-accordion>
+    </ion-accordion-group>
+    <ion-item
+      *ngIf="isEmployee"
+      class="textbox"
+      (click)="gotoHoliday()"
+      slot="header"
+      button="true"
+    >
+      <ion-label>Vacaciones</ion-label>
+    </ion-item>
+  </div>
+</ion-content>
+
+<app-alert
+  #deleteAlert
+  [title]="'¿Desea borrar este empleado?'"
+  (actionEmitter)="alertBox($event)"
+></app-alert>
+<ion-footer class="ion-no-border">
+  <ion-grid>
+    <ion-row>
+      <ion-col *ngIf="employee && !employee.isOwner" (click)="openAlert()">
+        <ion-button class="btn" expand="block">
+          <ion-icon icon="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col>
+        <ion-button
+          class="btn"
+          [disabled]="!employeeForm.valid || serviceSelected.length === 0"
+          (click)="saveEmployee()"
+          expand="block"
+        >
+          Guardar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

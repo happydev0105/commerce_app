@@ -1,0 +1,128 @@
+<app-header [backButton]="true" [titlePage]="'Crear promoción'"></app-header>
+
+<ion-content [forceOverscroll]="false">
+  <div #imageCanvas id="canvasDiv" class="w-full max-w-[350px] max-h-[350px]">
+    <div id="overlay">
+      <div id="texto" class="px-2">
+        <div
+          id="textWritten"
+          #textWritten
+          contenteditable="true"
+          autofocus="true"
+          [(ngModel)]="textSelected"
+          ngDefaultControl
+          (ngModelChange)="checkLength(textSelected)"
+          maxlength="50"
+        ></div>
+      </div>
+      <div
+        [ngStyle]="{'visibility': addIcon ? 'visible' : 'hidden'}"
+        id="mydiv"
+      >
+        <div
+          id="mydivheader"
+          [style.backgroundImage]="'url(' + (currentCommerce?.logo | getImage: 'commerce': currentCommerce?.uuid) + ')'"
+        ></div>
+      </div>
+      <div id="yeasyDiv">
+        <ion-img id="yeasyLogo" src="assets/icon/yeasy-logo.png"></ion-img>
+      </div>
+      <div class="absolute bottom-0 ml-[10px] text-xs text-white">
+       yeasyapp.com/#/{{currentCommerce?.slug}}
+       
+      </div>
+      <div *ngIf="showRating" id="ratingStars" class="w-full">
+        <div class="ion-text-wrap w-full">
+          <div class="flex justify-center flex-col items-center">
+            <div>
+              <div
+                *ngFor="let i of range(1, review?.value)"
+                class="w-4 h-4 inline-block"
+              >
+                <img class="mt-1" src="assets/icon/star-filled.png" />
+              </div>
+            </div>
+
+            <h4 class="inline-block">
+              {{review?.booking?.customer?.name}} galardonó a
+              {{review?.commerce?.name}}
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+  <ion-footer class="ion-no-border ">
+    <ion-grid *ngIf="showTextTools">
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="textbox no-side-margin">
+            <ion-label>Texto </ion-label>
+            <ion-textarea [(ngModel)]="textSelected" (ionInput)="typeText($event)" type="text"
+              placeholder="Introduce tu texto aquí" autocapitalize="true" [maxlength]="140"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <div class="grid grid-cols-3 gap-3 content-end ">
+  
+      
+      <div >
+        <ion-item [disabled]="isFromReview" class="textbox stacked-item" (click)="showTextTools = !showTextTools">
+          <!-- <ion-label class="no-padding">Reiniciar</ion-label> -->
+          <ion-button class="icon-button" fill="clear">
+            <ion-icon name="text-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+   <!--    <div  (click)="changeBackground()">
+        <ion-item class="textbox stacked-item">
+         
+          <ion-button class="icon-button" fill="clear">
+            <ion-icon name="image"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div> -->
+      <div>
+        <ion-item class="textbox stacked-item" (click)="shareImage(true)">
+          <!-- <ion-label class="no-padding">Compartir imagen</ion-label> -->
+          <ion-button class="icon-button" fill="clear">
+            <ion-icon name="share-social-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+  
+      <div (click)="drawIcon()" >
+        <ion-item class="textbox stacked-item" >
+          <!-- <ion-label class="no-padding">Compartir imagen</ion-label> -->
+          <ion-button class="icon-button" fill="clear">
+            <!-- <ion-icon size="large" src="assets/icon/LogoFinalYeasy.svg"></ion-icon> -->
+            Mi logo
+          </ion-button>
+        </ion-item>
+      </div>
+  
+  
+  </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="cancel()" class="btn" expand="block">
+            Cancelar
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button class="btn" (click)="downloadImage()" expand="block">
+            Guardar imagen
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
+  
+
+<div id="download">
+  <img #canvasTarget />
+  <a #downloadLink></a>
+</div>

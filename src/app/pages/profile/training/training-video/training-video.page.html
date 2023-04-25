@@ -1,0 +1,19 @@
+<app-header [backButton]="true" [titlePage]="video?.title"></app-header>
+
+<ion-content>
+  <app-video-player [video]="video"></app-video-player>
+  <ion-item>
+    <ion-label>{{video?.title}}</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-text>{{video?.description}}</ion-text>
+  </ion-item>
+  <div class="flex">
+    <ion-item *ngIf="video?.website" (click)="openInAppWebsite(video?.website)" class="full-width">
+      <ion-icon size="large" name="globe-outline"></ion-icon>
+    </ion-item>
+    <ion-item *ngIf="video?.instagram" (click)="openInstagram(video?.instagram)" class="full-width">
+      <ion-icon size="large" name="logo-instagram"></ion-icon>
+    </ion-item>
+  </div>
+</ion-content>

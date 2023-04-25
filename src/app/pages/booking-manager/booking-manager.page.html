@@ -1,0 +1,186 @@
+<ion-header>
+  <div class="main-content">
+    <div class="calender">
+      <div
+        [ngClass]="[isIOS ? 'header-with-padding-top-ios' : '']"
+        class="month"
+      >
+        <ion-row>
+          <div
+            class="absolute left-px mt-[10px] float-left pl-4"
+            (click)="goToNotifications()"
+          >
+            <ion-icon size="large" name="notifications-outline"></ion-icon>
+            <ion-badge
+              *ngIf="notificationsNotReaded > 0"
+              class="absolute bottom-0 ml-[-10px]"
+              slot="end"
+              >{{notificationsNotReaded}}</ion-badge
+            >
+          </div>
+          <ion-col size="1" (click)="prevMonth()">
+            <ion-icon class="float-right" name="chevron-back-outline">
+            </ion-icon>
+          </ion-col>
+
+          <ion-label
+            id="open-start-day"
+            [innerText]="displayMonthAndYear()"
+          ></ion-label>
+
+          <ion-col size="1" (click)="nextMonth()">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </div>
+      <div class="flex justify-center text-sm" *ngIf="timetable?.length > 0">
+        {{showDayTimetable()}}
+      </div>
+
+      <ion-modal
+        id="open-modal-calendar"
+        [initialBreakpoint]="0.6"
+        [backdropDismiss]="true"
+        trigger="open-start-day"
+      >
+        <ng-template>
+          <ion-toolbar>
+            <ion-title>Hora inicio</ion-title>
+          
+          </ion-toolbar>
+          <ion-content>
+            <mat-calendar [(selected)]="selectedDay.date" color="yeasy"
+            (selectedChange)="dateChanged($event, 'open-modal-calendar')"></mat-calendar>
+      
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+
+      <div class="select-date">
+        <ion-slides #slideDate>
+          <ion-slide>
+            <ion-row class="row_cal">
+              <ion-col size="0.75" (click)="getPreviousWeekDays()">
+                <ion-icon name="chevron-back-outline" *ngIf="weekNumber !== 0">
+                </ion-icon>
+              </ion-col>
+              <ion-col
+                *ngFor="let day of days"
+                size="1.5"
+                class="md:px-8"
+                (click)="selectDate(day)"
+              >
+                <ion-label
+                  class="lbl_day"
+                  [class.selectedDay]="day.dayNumber === selectedDay.dayNumber "
+                  [class.todayDay]="checkIsToday(day.date)"
+                  >{{ day.shortName }}
+                  <ion-label
+                    class="lbl_date"
+                    [class.selectedDate]="day.dayNumber === selectedDay.dayNumber"
+                    >{{ day.dayNumber }}
+                  </ion-label>
+                </ion-label>
+              </ion-col>
+              <ion-col size="0.75" (click)="getNextWeekDays()">
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-slide>
+        </ion-slides>
+      </div>
+    </div>
+  </div>
+</ion-header>
+<ion-content>
+  <ion-refresher
+    *ngIf="timetable"
+    slot="fixed"
+    (ionRefresh)="doRefresh($event)"
+  >
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Arrastra para actualizar"
+      refreshingSpinner="circles"
+      refreshingText="Cargando..."
+    >
+    </ion-refresher-content>
+  </ion-refresher>
+  <div [hidden]="!overscroll">
+    <div class="w-full flex h-24 flex-col-reverse items-center">
+      <ion-label class="py-2">{{overmsg}}</ion-label>
+      <ion-spinner name="circles"></ion-spinner>
+    </div>
+  </div>
+
+  <ion-list style="overflow-x: scroll">
+    <ng-container *ngIf="timetable.length > 0; else noEmployee">
+      <ng-container *ngIf="employeeCollection?.length > 0">
+        <app-time-table
+          *ngIf="timetable"
+          [isToday]="isToday"
+          [timetable]="timetable[indexSelected]"
+          [selectedDate]="selectedDay"
+          (navigateTo)="openBooking($event)"
+          (updateBooking)="updateBooking($event)"
+          (overscrollEmitter)="overScrollEmitted($event)"
+          (overscrollEndEmitter)="overscrollEndEmitter($event)"
+          (longPressAction)="openActionSheet($event)"
+          (editBooking)="editBookingProcess($event)"
+        ></app-time-table>
+      </ng-container>
+    </ng-container>
+  </ion-list>
+  <ng-template #noEmployee>
+    <app-no-data
+      class="ion-text-center"
+      [title]="'No hay empleados disponibles o no tienen servicios asignados. Por favor cree o asigne servicios para salir en la agenda'"
+      [content]="false"
+    ></app-no-data>
+  </ng-template>
+</ion-content>
+<ion-fab
+  *ngIf="!editBooking"
+  vertical="bottom
+  "
+  horizontal="end"
+  slot="fixed"
+>
+  <ion-fab-button (click)="openActionSheet()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+<ion-fab
+  *ngIf="editBooking"
+  vertical="bottom
+  "
+  horizontal="end"
+  slot="fixed"
+>
+  <ion-fab-button (click)="editBookingConfirmation(true)">
+    <ion-icon name="checkmark-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<ion-fab
+  *ngIf="editBooking"
+  vertical="bottom
+  "
+  horizontal="start"
+  slot="fixed"
+>
+  <ion-fab-button (click)="editBookingConfirmation(false)">
+    <ion-icon name="close"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+<ion-fab
+  *ngIf="!isToday && !editBooking"
+  (click)="goToToday()"
+  vertical="bottom
+  "
+  horizontal="center"
+  slot="fixed"
+>
+  <ion-fab-button> HOY </ion-fab-button>
+</ion-fab>
+<app-action-sheet></app-action-sheet>

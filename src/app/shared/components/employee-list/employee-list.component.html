@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Empleados</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <ion-searchbar
+    (ionInput)="searchEmployee($event)"
+    showCancelButton="focus"
+    placeholder="Buscar"
+    cancelButtonText="Cancelar"
+    animated>
+  </ion-searchbar>
+
+  <ion-card *ngFor="let employee of employeeCollectionFiltered" (click)="selectEmployee(employee)" button="true" [ngClass]="{'selectedCard': checkIfSelected(employee)}">
+    <ion-grid class="customer-card">
+      <ion-row class="customer-row">
+        <ion-col class="customer-image" size="3">
+          <img src="{{employee.image | getImage:'employee':employee.uuid}}" />
+        </ion-col>
+        <ion-col size="8">
+          <ion-label class="customer-label">{{employee.name}} {{employee.surname}}</ion-label>
+        </ion-col>
+        <ion-col size="1">
+          <div class="icon-container">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+</ion-content>
+<ion-footer>
+  <ion-button
+    [disabled]="selectedEmployeeCompo.length < 1"
+    color="dark"
+    (click)="dismiss()"
+    class="apply-button"
+    expand="block"
+    mode="ios">
+    Seleccionar empleado
+  </ion-button>
+</ion-footer>

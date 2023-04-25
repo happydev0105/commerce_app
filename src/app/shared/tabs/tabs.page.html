@@ -1,0 +1,23 @@
+<ion-tabs #tabs (ionTabsDidChange)="setCurrentTab()">
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <ion-label *ngIf="selectedTab === 'home'">Reservas</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button *ngIf="authService.checkPermission('gestion_clientes')" tab="customers">
+      <ion-icon name="people-outline"></ion-icon>
+      <ion-label *ngIf="selectedTab === 'customers'">Clientes</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button *ngIf="authService.checkPermission('ventas')" tab="payments">
+      <ion-icon name="file-tray-full-outline"></ion-icon>
+      <ion-label *ngIf="selectedTab === 'payments'">Venta</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="profile">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label *ngIf="selectedTab === 'profile'">My Yeasy</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

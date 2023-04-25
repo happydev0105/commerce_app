@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Galería</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="gallery && gallery.images.length > 0; else noData">
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col *ngFor="let image of gallery.images" size="6">
+          <div (click)="selectImage(image)"  class="bg_img" [style.backgroundImage]="'url(' + (image | getImage: 'commerce': commerceLogged) + ')'"
+           ></div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+</ion-content>
+<ng-template #noData>
+  <app-no-data [title]="'Tu galería está vacía'" [content]="false"></app-no-data>
+</ng-template>

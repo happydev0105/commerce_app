@@ -1,0 +1,11 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button *ngIf="backButton" slot="start" text="" defaultHref="tabs/profile" color="dark">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="titleCase">{{titlePage | translateDays | titlecase}}</ion-title>
+    <ion-title *ngIf="!titleCase">{{titlePage | translateDays }}</ion-title>
+  </ion-toolbar>
+</ion-header>

@@ -1,0 +1,121 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        (click)="dismiss()"
+        slot="start"
+        text=""
+        defaultHref="tabs/profile/billing"
+        color="dark"
+      >
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>Exportación de datos</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="my-4 p-4">
+    <p>Selecciona el rango de fechas para exportar los datos a excel</p>
+  </div>
+
+  <form [formGroup]="form">
+    <div class="p-0" id="open-start-days">
+      <ion-item mode="ios" class="textbox">
+        <ion-label mode="ios" class="w-full max-w-none"
+          >Desde
+          <span class="float-right">{{
+            dateService.formatDateLanguage(
+              form.controls["startDay"].value,
+              locale
+            )
+          }}</span>
+        </ion-label>
+        <ion-input
+          type="hidden"
+          class="hidden"
+          [value]="
+            dateService.formatDateLanguage(
+              form.controls['startDay'].value,
+              locale
+            )
+          "
+        ></ion-input>
+        <ion-modal
+          id="open-modal-calendar"
+          initialBreakpoint="0.50"
+          trigger="open-start-days"
+        >
+          <ng-template>
+            <ion-content>
+              <ion-toolbar>
+                <ion-title>Desde</ion-title>
+              </ion-toolbar>
+              <ion-datetime
+                #datetime
+                first-day-of-week="1"
+                locale="es-ES"
+                (ionChange)="dateStartChanged(datetime.value)"
+                presentation="date"
+                [max]="startDate"
+                [value]="startDate"
+                size="cover"
+                formControlName="startDay"
+              >
+              </ion-datetime>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+    </div>
+    <div class="p-0" id="open-end-days">
+      <ion-item mode="ios" class="textbox">
+        <ion-label mode="ios" class="w-full max-w-none"
+          >Hasta
+          <span class="float-right">{{
+            dateService.formatDateLanguage(
+              form.controls["endDay"].value,
+              locale
+            )
+          }}</span>
+        </ion-label>
+        <ion-input
+          type="hidden"
+          class="hidden"
+          [value]="
+            dateService.formatDateLanguage(
+              form.controls['endDay'].value,
+              locale
+            )
+          "
+        ></ion-input>
+        <ion-modal
+          id="open-modal-calendar"
+          initialBreakpoint="0.50"
+          trigger="open-end-days"
+        >
+          <ng-template>
+            <ion-content>
+              <ion-toolbar>
+                <ion-title>Hasta</ion-title>
+              </ion-toolbar>
+              <ion-datetime
+                #datetime
+                first-day-of-week="1"
+                locale="es-ES"
+                (ionChange)="dateEndChanged(datetime.value)"
+                presentation="date"
+                size="cover"
+                [value]="endDate"
+                [max]="startDate"
+                formControlName="endDay"
+              >
+              </ion-datetime>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+    </div>
+    <ion-button (click)="dismissWithData()" expand="block">Exportar</ion-button>
+  </form>
+</ion-content>

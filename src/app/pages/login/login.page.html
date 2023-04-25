@@ -1,0 +1,49 @@
+<ion-content class="ion-padding" [scrollEvents]="true" (ionScroll)="onScroll($event)">
+
+  <ion-row>
+    <ion-col class="text-center">
+      <ion-img class="p-24" src="assets/icon/yeasy-logo.svg"></ion-img>
+    </ion-col>
+  </ion-row>
+
+  <div>
+    <form [formGroup]="loginForm" (ngSubmit)="submitForm()" novalidate>
+      <ion-item mode="ios" class="textbox">
+        <ion-label mode="ios">Correo</ion-label>
+        <ion-input mode="ios" ngDefaultControl formControlName="email" type="email" inputmode="email"></ion-input>
+      </ion-item>
+
+      <div class="validator-error" *ngIf="isSubmitted && emailField.errors?.required">
+        El email es obligatorio
+      </div>
+      <div class="validator-error" *ngIf="emailField.touched && emailField.errors?.pattern">
+        No es un email válido
+      </div>
+
+      <ion-item mode="ios" class="textbox">
+        <ion-label mode="ios">Contraseña</ion-label>
+        <ion-input
+        ngDefaultControl
+        [type]="password ? 'password' : 'text'"
+        formControlName="password"
+      ></ion-input>
+      <ion-icon (click)="tooglePassword()" name="eye"></ion-icon>
+      </ion-item>
+
+      <ion-item mode="ios">
+        <ion-label slot="end" (click)="goToForgotPassword()">¿Has olvidado tu contraseña?</ion-label>
+      </ion-item>
+
+      <div class="validator-error" *ngIf="isSubmitted && passwordField.errors?.required">
+        La contraseña es obligatoria
+      </div>
+      <ion-button color="dark" type="submit" [disabled]="loginForm.invalid" expand="block">
+        INICIAR SESIÓN
+      </ion-button>
+    </form>
+  </div>
+
+ 
+</ion-content>
+
+

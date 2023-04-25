@@ -1,0 +1,7 @@
+{
+  "name": "Yeasy Commerce",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

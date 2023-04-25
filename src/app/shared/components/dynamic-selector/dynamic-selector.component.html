@@ -1,0 +1,65 @@
+<div class="birth-selector">
+  <div class="grid grid-cols-2 gap-4 p-4 md:p-8 relative top-[19vh]">
+    <div class="col-start-1 box w-full"></div>
+    <div class="col-start-2 box w-full"></div>
+  </div>
+  <div class="grid grid-cols-2 p-4 md:p-8 mt-[-25%] h-full">
+    <div class="mr-3 time-selector">
+      <swiper
+        [initialSlide]="getInitialSlide(sideLeft)"
+        [direction]="'vertical'"
+        [spaceBetween]="10"
+        [effect]="'coverflow'"
+        [centeredSlides]="true"
+        [slidesPerView]="'auto'"
+        [coverflowEffect]="{
+          rotate: 0,
+          stretch: 0,
+          depth: 0,
+          modifier: 1,
+          slideShadows: false
+        }"
+        class="swiper hours"
+        (transitionEnd)="onSlideSideLeftChange($event)"
+      >
+        <ng-template
+          class="slide-left"
+          *ngFor="let item of sideLeft"
+          swiperSlide
+        >
+          <div [attr.value]="item.value">{{ item.text }}</div>
+        </ng-template>
+      </swiper>
+    </div>
+    <div class="ml-3 time-selector">
+      <swiper
+        [initialSlide]="getInitialSlide(sideRight)"
+        [direction]="'vertical'"
+        [spaceBetween]="10"
+        [effect]="'coverflow'"
+        [centeredSlides]="true"
+        [slidesPerView]="'auto'"
+        [coverflowEffect]="{
+          rotate: 0,
+          stretch: 0,
+          depth: 0,
+          modifier: 1,
+          slideShadows: false
+        }"
+        class="swiper minutes"
+        (transitionEnd)="onSlideSideRightChange($event)"
+      >
+        <ng-template
+          class="slide-right"
+          *ngFor="let item of sideRight"
+          swiperSlide
+        >
+          <div [attr.value]="item.value">{{ item.text }}</div>
+        </ng-template>
+      </swiper>
+    </div>
+  </div>
+  <div class="absolute bottom-0">
+    <ion-button (click)="dismiss()">Aceptar</ion-button>
+  </div>
+</div>

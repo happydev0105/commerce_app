@@ -1,0 +1,75 @@
+.edit_profile_main_content {
+  padding: 16px;
+
+  .user_image {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    margin: auto;
+    margin-top: 5%;
+    border: 1px solid lightgray;
+    & .img {
+      border-radius: 50%;
+      height: 98px;
+      width: 100px;
+    }
+  }
+
+  .input_box {
+    border: 1px solid lightgray;
+    color: grey;
+    background: white;
+    margin-bottom: 16px;
+    padding: 5px 12px;
+  }
+}
+
+.date-item {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.label-no-padding {
+  padding: 0;
+}
+
+.hour-list {
+  margin-top: 0 !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid gray !important;
+}
+
+.service-card {
+  padding: 0;
+  max-height: 43.5px;
+
+  .service-row {
+    border-radius: 15px;
+
+    .service-image {
+      background-color: rgb(228, 228, 228);
+      padding: 0;
+      height: 100%;
+    }
+
+    .icon-container {
+      margin-top: 190%;
+      text-align: center;
+    }
+
+    .service-label {
+      display: block;
+
+      font-size: 14px;
+      color: #666;
+    }
+  }
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.stacked-item {
+  margin-top: 0;
+}

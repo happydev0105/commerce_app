@@ -1,0 +1,125 @@
+<app-header [backButton]="false" [titlePage]="'Clientes'"></app-header>
+<ion-content>
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="dark" (click)="goToCreate()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-searchbar
+    #searchbar
+    *ngIf="!showNoData"
+    (ionInput)="searchCustomer($event)"
+    showCancelButton="focus"
+    placeholder="Buscar"
+    cancelButtonText="Cancelar"
+    animated
+  >
+  </ion-searchbar>
+
+  <ion-grid
+    *ngIf="!showNoData"
+    fixed
+    style="border-top: 1px solid lightgray; border-bottom: 1px solid lightgray"
+  >
+    <ion-row>
+      <ion-col
+        [size]="customerCollectionFiltered.length > 0 ? 10 : 12"
+        style="border-right: 1px solid lightgray"
+      >
+        <ion-item>
+          <ion-label *ngIf="customerCollectionFiltered.length === 0 && isReady"
+            >NO SE ENCUENTRAN COINCIDENCIAS</ion-label
+          >
+          <ion-label *ngIf="customerCollectionFiltered.length === 1"
+            >{{customerCollectionFiltered.length}} CLIENTE</ion-label
+          >
+          <ion-label *ngIf="customerCollectionFiltered.length > 1"
+            >{{customerCollectionFiltered.length}} CLIENTES</ion-label
+          >
+        </ion-item>
+      </ion-col>
+      <ion-col size="2" *ngIf="customerCollectionFiltered.length > 0">
+        <ion-item>
+          <ion-icon (click)="presentModal()" name="options-outline"></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card
+    *ngFor="let customer of customerCollectionFiltered"
+    (click)="goToDetail(customer)"
+    button="true"
+  >
+    <ion-grid class="customer-card">
+      <ion-row class="customer-row">
+        <ion-col
+          *ngIf="customer?.photoURL; else showInitialsAvatar"
+          class="customer-image bg-white max-w-[4rem]"
+          size="3"
+        >
+          <img
+            id="customerImage"
+            class="w-16 h-16 object-cover"
+            src="{{customer?.photoURL | getImage: 'customer': customer?.uuid}}"
+          />
+        </ion-col>
+        <ion-col size="8" class="grid">
+          <div class="place-self-center w-full mt-2 pl-3">
+            <ion-label class="flex justify-between font-semibold"
+              >{{ customer.name + " " + customer.lastname }}
+              <div class="flex absolute right-0 mt-[5px]">
+                <div *ngIf="isBanned(customer.uuid)" class="text-lg mt-[1px]">
+                  <ion-icon name="ban-outline" color="danger"></ion-icon>
+                </div>
+                <div *ngIf="customer.hasApp" class="rounded-full h-4 w-6 ml-2">
+                  <img src="./assets/images/icon.png" alt="" />
+                </div>
+              </div>
+            </ion-label>
+            <p>{{ customer.phone }}</p>
+          </div>
+        </ion-col>
+        <ion-col class="grid" size="1">
+          <div class="place-self-center">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ng-template #showInitialsAvatar>
+      <app-avatar-initials
+        [name]="customer?.name"
+        [surname]="customer?.lastname"
+      ></app-avatar-initials>
+    </ng-template>
+  </ion-card>
+
+  <ion-card *ngIf="!showNoData && isReady && customerCollectionFiltered.length === 0">
+    <ion-grid class="customer-card">
+      <ion-row class="customer-row">
+        <ion-col size="12">
+          <ion-item class="textbox">
+            <ion-label slot="start"
+              >Crear a <b>{{customerSearch}}</b></ion-label
+            >
+            <ion-button
+              (click)="goToCreate()"
+              slot="end"
+              expand="block"
+              fill="clear"
+              shape="round"
+            >
+              <ion-icon name="add"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+  <app-no-data
+    *ngIf="showNoData && !isReady && customerCollectionFiltered.length === 0"
+    [title]="'Parece que aún no tienes clientes'"
+  ></app-no-data>
+</ion-content>

@@ -1,0 +1,89 @@
+<app-header [backButton]="true" [titlePage]="title"></app-header>
+
+<ion-content fullscreen="true">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="employeeCollection.length > 0" novalidate>
+    <ion-item class="textbox" no-lines lines="none">
+      <ion-label>Empleado</ion-label>
+      <ion-select #employee formControlName="employee" interface="action-sheet"
+        (ionChange)="selectedEmployee(employee.value)">
+        <ion-select-option *ngFor="let employee of employeeCollection" [value]="employee.uuid">{{employee.name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <div class="p-0" id="open-start-date">
+      <ion-item class="textbox">
+        <ion-label class="w-full max-w-none">Fecha Inicio
+          <span class="float-right">{{dateService.formatDateLanguage(startDay.value, locale)}}</span>
+        </ion-label>
+        <ion-input type="hidden" class="hidden"
+          [value]="dateService.formatDateLanguage(startDay.value, locale)"></ion-input>
+        <ion-modal id="open-modal-calendar" initialBreakpoint="0.50" trigger="open-start-date">
+          <ng-template>
+            <ion-content>
+              <ion-toolbar>
+                <ion-title>Fecha inicio</ion-title>
+              </ion-toolbar>
+              <ion-datetime #datetime first-day-of-week="1" locale="es-ES" (ionChange)="dateChanged(datetime.value)"
+                presentation="date" size="cover" formControlName="startDay">
+              </ion-datetime>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+    </div>
+
+
+    <ion-item class="textbox" no-lines lines="none" id="start-hour" (click)="openPickerStartHour()">
+      <ion-label class="w-full max-w-none">Hora inicio
+        <span class="float-right">{{form.controls['startHour'].value.split(':')[0] |
+          formatHour}}:{{form.controls['startHour'].value.split(':')[1] |
+          formatHour}}</span></ion-label>
+      <ion-input type="hidden" class="ion-text-right" [value]="form.controls['startHour'].value ">
+      </ion-input>
+     
+    </ion-item>
+    <ion-item class="textbox" no-lines lines="none" id="end-hour" (click)="openPickerEndHour()">
+      <ion-label class="w-full max-w-none">Hora final
+        <span class="float-right">{{form.controls['endHour'].value.split(':')[0] |
+          formatHour}}:{{form.controls['endHour'].value.split(':')[1] |
+          formatHour}}</span></ion-label>
+      <ion-input type="hidden" class="ion-text-right" [value]="form.controls['endHour'].value ">
+      </ion-input>
+    
+    </ion-item>
+    <ion-item class="textbox" no-lines lines="none">
+      <ion-label>Motivo</ion-label>
+      <ion-input class="ion-text-right" autocapitalize="true" ngDefaultControl formControlName="message"
+        type="text"></ion-input>
+    </ion-item>
+  </form>
+  <ion-footer  *ngIf="employeeCollection.length > 0" class="ion-no-border">
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngIf="isEdit" (click)="openAlert()">
+          <ion-button class="btn" expand="block">
+            <ion-icon icon="trash"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="cancel()" class="btn" expand="block">
+            Cancelar
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="onSubmit()" [disabled]="form.invalid" class="btn" expand="block">
+            Guardar
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
+
+</ion-content>
+
+<app-alert
+  #deleteAlert
+  (actionEmitter)="alertBox($event)"
+  [title]="'¿Desea borrar?'"
+></app-alert>

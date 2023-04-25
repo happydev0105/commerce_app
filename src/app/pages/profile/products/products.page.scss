@@ -1,0 +1,27 @@
+.service-card {
+  padding: 0;
+  max-height: 43.5px;
+
+  .service-row {
+    border-radius: 15px;
+
+
+    .service-image {
+      background-color: rgb(228, 228, 228);
+      padding: 0;
+      height: 100%;
+    }
+
+    .icon-container {
+      margin-top: 190%;
+      text-align: center;
+    }
+
+    .service-label {
+    display: block;
+    margin-top: 3%;
+    margin-left: 5%;
+    margin-bottom: 3%;
+    }
+  }
+}

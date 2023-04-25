@@ -1,0 +1,21 @@
+<app-header
+  [titlePage]="'Ubicación del negocio'"
+  [titleCase]="false"
+  [backButton]="true"
+></app-header>
+<ion-content>
+  <div class="p-4">
+    <p>Posicione el marcador en la ubicacion de su negocio.</p>
+    <p>Haga zoom para mas precisión.</p>
+  </div>
+  <div id="map" class="w-full h-[300px]"></div>
+  <div class="flex justify-between p-4">
+    <ion-button (click)="saveLocation()"> Guardar ubicación </ion-button>
+    <button (click)="zoomIn()">
+      <ion-icon size="large" name="add-circle-outline"></ion-icon>
+    </button>
+    <button (click)="zoomOut()">
+      <ion-icon size="large" name="remove-circle-outline"></ion-icon>
+    </button>
+  </div>
+</ion-content>

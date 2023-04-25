@@ -1,0 +1,29 @@
+.customer-card {
+  padding: 0;
+  .customer-row {
+    border-radius: 15px;
+    .customer-image {
+      background-color: rgb(239, 239, 239);
+      padding: 0;
+    }
+    .icon-container {
+      margin-top: 190%;
+      text-align: center;
+    }
+    .customer-label {
+      float: left;
+      position: relative;
+      top: 40%;
+      left: 20%;
+    }
+  }
+}
+
+
+.no-padding {
+  padding: 0;
+}
+
+.no-border {
+  border: 0;
+}

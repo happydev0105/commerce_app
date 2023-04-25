@@ -1,0 +1,95 @@
+<app-header [titlePage]="'Empleados - Paso 3'" [backButton]="true"></app-header>
+
+<ion-content>
+  <ion-grid class="mb-12">
+    <ion-row class="ion-justify-content-center">
+      <div class="px-8 py-4" *ngIf="employeeCollectionFiltered.length === 0">
+        <h1 class="text-center">Crea tus empleados</h1>
+        <p>Da de alta a tus empleados</p>
+        <p>
+          Les llegará un email a su correo para que descarguen la app y puedan
+          empezar a trabajar
+        </p>
+        <p>Si no necesitas crear empleados puedes continuar</p>
+      </div>
+      <div *ngIf="employeeCollectionFiltered.length === 1" class="p-8">
+        <h1 class="text-center">Añade a tu plantilla.</h1>
+        <p>¡Genial! Ya tienes tu primer empleado creado</p>
+        <p>Si no necesitas crear más empleados puedes continuar</p>
+      </div>
+    </ion-row>
+    <ion-row class="ion-justify-content-center w-full">
+      <ion-list class="w-full">
+        <ion-reorder-group
+          [disabled]="false"
+          (ionItemReorder)="handleReorder($any($event),employeeCollectionFiltered)"
+        >
+          <ng-container *ngFor="let employee of employeeCollectionFiltered">
+            <ion-item class="m-0 p-0 w-full">
+              <ion-card
+                button="true"
+                class="w-full m-3"
+                (click)="goToDetail(employee)"
+              >
+                <ion-grid class="customer-card">
+                  <ion-row class="customer-row w-full">
+                    <ion-item class="w-full">
+                      <ion-reorder
+                        slot="start"
+                        *ngIf="employeeCollectionFiltered.length > 1"
+                      ></ion-reorder>
+                      <ion-col
+                        *ngIf="employee?.image; else showInitialsAvatar"
+                        class="customer-image bg-white py-2"
+                        size="3"
+                      >
+                        <img
+                          id="employeeImage"
+                          class="w-16 h-16 md:w-36 md:h-36 object-cover rounded-full"
+                          src="{{employee?.image | getImage:'employee':employee.uuid}}"
+                        />
+                      </ion-col>
+                      <ion-col size="8" class="grid">
+                        <ion-label class="place-self-center w-full pl-3"
+                          >{{employee.name}} {{employee.surname}}</ion-label
+                        >
+                      </ion-col>
+                      <ion-col size="1" class="grid">
+                        <div class="place-self-center">
+                          <ion-icon name="chevron-forward-outline"></ion-icon>
+                        </div>
+                      </ion-col>
+                    </ion-item>
+                  </ion-row>
+                </ion-grid>
+              </ion-card>
+            </ion-item>
+            <ng-template #showInitialsAvatar>
+              <app-avatar-initials
+                [name]="employee?.name"
+                [surname]="employee?.surname"
+                [isCustomer]="false"
+              ></app-avatar-initials>
+            </ng-template>
+          </ng-container>
+        </ion-reorder-group>
+      </ion-list>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<ion-footer class="h-20 py-2 bg-white">
+  <div class="px-8 w-full fixed">
+    <div class="grid grid-cols-2">
+      <div>
+        <ion-button (click)="goToCreateEmployee()" expand="block" class="btn">
+          Crear empleado
+        </ion-button>
+      </div>
+      <div>
+        <ion-button (click)="goToNext()" expand="block" class="btn">
+          Continuar
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-footer>

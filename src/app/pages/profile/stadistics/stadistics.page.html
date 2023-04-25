@@ -1,0 +1,364 @@
+<app-header
+  [titlePage]="'Estadísticas e Informes'"
+  [titleCase]="false"
+  [backButton]="true"
+></app-header>
+
+<ion-content>
+  <form [formGroup]="selectorTimeForm" class="sticky top-0 bg-white z-50">
+    <ion-item class="textbox" (click)="presentSelectTimeSlotActionSheet()">
+      <ion-label slot="start"><strong>{{showRange}}</strong></ion-label>
+      <ion-button slot="end" fill="clear" shape="round">
+        <ion-icon
+          class="icon-select-range"
+          name="caret-down-circle-outline"
+        ></ion-icon>
+      </ion-button>
+    
+     
+      <ion-modal
+        id="modal-month"
+        initialBreakpoint="0.30"
+        trigger="open-selector-time-slot"
+      >
+        <ng-template>
+          <ion-content>
+            <ion-toolbar>
+              <ion-title>Seleccione un mes</ion-title>
+              <ion-buttons slot="end">
+                <ion-button color="dark" (click)="dismissModal('modal-month')"
+                  >Aceptar</ion-button
+                >
+              </ion-buttons>
+            </ion-toolbar>
+            <ion-datetime
+              #datetime
+              first-day-of-week="1"
+              locale="es-ES"
+              presentation="month-year"
+              size="cover"
+              formControlName="monthSelected"
+            >
+            </ion-datetime>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+      <ion-modal
+        id="modal-year"
+        initialBreakpoint="0.30"
+        trigger="open-selector-time-slot"
+      >
+        <ng-template>
+          <ion-content>
+            <ion-toolbar>
+              <ion-title>Seleccione un año</ion-title>
+              <ion-buttons slot="end">
+                <ion-button color="dark" (click)="dismissModal('modal-year')"
+                  >Aceptar</ion-button
+                >
+              </ion-buttons>
+            </ion-toolbar>
+            <ion-datetime
+              #datetime
+              first-day-of-week="1"
+              locale="es-ES"
+              presentation="year"
+              size="cover"
+              [min]="toNumber(year) - 1"
+              formControlName="yearSelected"
+            >
+            </ion-datetime>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+  </form>
+
+  <!-- CITAS -->
+  <ion-grid fixed>
+    <h1 class="section-title">Citas</h1>
+
+    <ion-row>
+      <ion-col size="6">
+        <ion-item class="textbox report-item">
+          <ion-label class="no-padding ion-text-wrap">Finalizadas</ion-label>
+          <ion-note class="no-margin item-note" slot="end"
+            >{{bookingReport.finished}}</ion-note
+          >
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item class="textbox report-item">
+          <ion-label class="no-padding ion-text-wrap">Por realizar</ion-label>
+          <ion-note class="no-margin item-note" slot="end"
+            >{{bookingReport.pending}}</ion-note
+          >
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item class="textbox report-item">
+          <ion-label class="no-padding ion-text-wrap">No asistidas</ion-label>
+          <ion-note class="no-margin item-note" slot="end"
+            >{{bookingReport.non_attendant}}</ion-note
+          >
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item class="textbox report-item">
+          <ion-label class="no-padding ion-text-wrap">Citas totales</ion-label>
+          <ion-note class="no-margin item-note" slot="end"
+            >{{bookingReport.total}}</ion-note
+          >
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="bookingReport.payment_pending.length > 0">
+      <ion-col size="12">
+        <ion-item
+          class="textbox"
+          style="margin: 0 !important"
+          button="true"
+          (click)="goToPaymentPendingBooking()"
+        >
+          <ion-icon
+            name="alert-circle-outline"
+            slot="start"
+            color="danger"
+          ></ion-icon>
+          <ion-label class="no-padding ion-text-wrap"
+            >Tienes {{bookingReport.payment_pending.length}} reserva<span
+              *ngIf="bookingReport.payment_pending.length > 1"
+              >s</span
+            >
+            sin cobrar</ion-label
+          >
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card *ngIf="pieChartDatasets[0]?.data[0]?.finished > 0">
+    <ion-card-content>
+      <canvas
+        baseChart
+        width="400"
+        height="400"
+        [type]="pieChartType"
+        [datasets]="pieChartDatasets"
+        [labels]="pieChartLabels"
+        [options]="pieChartOptions"
+        [legend]="pieChartLegend"
+        [plugins]="pieChartPlugins"
+      >
+      </canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- FACTURACIÓN -->
+
+  <ion-grid fixed>
+    <h1 class="section-title">Facturación</h1>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item class="textbox report-item">
+          <ion-label class="no-padding ion-text-wrap">Ventas totales</ion-label>
+          <ion-note class="no-margin item-note" slot="end"
+            >{{totalBilling.toFixed(2)}}€</ion-note
+          >
+        </ion-item>
+      </ion-col>
+      <ion-col *ngIf="totalProductDisaggregated > 0" size="12">
+        <ion-item class="textbox report-item">
+          <ion-label class="no-padding ion-text-wrap"
+            >Total productos</ion-label
+          >
+          <ion-note class="no-margin item-note" slot="end"
+            >{{totalProductDisaggregated.toFixed(2)}}€</ion-note
+          >
+        </ion-item>
+      </ion-col>
+      <ion-col *ngIf="totalServiceDisaggregated > 0" size="12">
+        <ion-item class="textbox report-item">
+          <ion-label class="no-padding ion-text-wrap"
+            >Total servicios</ion-label
+          >
+          <ion-note class="no-margin item-note" slot="end"
+            >{{totalServiceDisaggregated.toFixed(2)}}€</ion-note
+          >
+        </ion-item>
+      </ion-col>
+      <ion-col *ngIf="totalOthersDisaggregated != 0" size="12">
+        <ion-item class="textbox report-item">
+          <ion-label class="no-padding ion-text-wrap">Otros</ion-label>
+          <ion-note class="no-margin item-note" slot="end"
+            >{{totalOthersDisaggregated.toFixed(2)}}€</ion-note
+          >
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card *ngIf="lineChartData.datasets.length > 0">
+    <ion-card-content>
+      <canvas
+        baseChart
+        width="400"
+        height="400"
+        [type]="'line'"
+        [data]="lineChartData"
+        [options]="lineChartOptions"
+        [legend]="lineChartLegend"
+        [plugins]="lineChartPlugins"
+      >
+      </canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- MÉTODOS DE PAGO -->
+  <ion-grid *ngIf="paymentsByTypeCollection.length > 0" fixed>
+    <h1 class="section-title">Métodos de pago</h1>
+    <ion-row>
+      <ion-col size="12">
+        <ion-list>
+          <ion-item
+            *ngFor="let type of paymentsByTypeCollection"
+            class="textbox"
+          >
+            <ion-badge slot="end">{{type.amount.toFixed(2)}}€</ion-badge>
+            <ion-label slot="start">{{type.method}}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- CLIENTES NUEVOS Y REGRESADOS -->
+
+  <ion-grid fixed>
+    <h1 class="section-title">Clientes</h1>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item class="textbox report-item">
+          <ion-label slot="start" class="no-padding ion-text-wrap"
+            >Clientes</ion-label
+          >
+          <ion-label class="no-margin no-padding" slot="end">
+            <span>Nuevos</span>
+            <ion-note class="item-note customer-note">
+              {{newCustomerReport.new}}</ion-note
+            >
+            <p></p>
+            <span>Regresan</span>
+            <ion-note class="item-note customer-note">
+              {{newCustomerReport.comingBack}}</ion-note
+            >
+          </ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- TOP 5 CLIENTES -->
+
+  <ion-grid fixed *ngIf="topFiveCustomersReport.length > 0" class="mt-3">
+    <h1 class="section-title">Clientes Top 5</h1>
+    <ion-card class="mx-[0.5rem] mt-3">
+      <ion-card-content class="pl-0">
+        <ion-list lines="inset">
+          <ion-item
+            class="customer-item"
+            *ngFor="let item of topFiveCustomersReport"
+          >
+            <ion-avatar>
+              <img
+                src="{{item.customer.photoURL | getImage:'customer': item.customer.uuid}}"
+                class="w-8 h-8 object-cover"
+              />
+            </ion-avatar>
+            <ion-label style="margin-left: 10px"
+              >{{item.customer.name}} {{item.customer.lastname}}</ion-label
+            >
+            <ion-label slot="end">{{item.totalAmount.toFixed(2)}}€</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-grid>
+
+  <!-- TOP 5 PRODUCTOS -->
+  <ion-grid fixed *ngIf="topFiveProductsReport.length > 0" class="mt-3">
+    <ion-row>
+      <ion-col size="6">
+        <h1 class="section-title">Productos Top 5</h1>
+      </ion-col>
+    </ion-row>
+    <ion-card class="mx-[0.5rem] mt-3">
+      <ion-card-content class="pl-0">
+        <ion-list lines="inset">
+          <ion-item
+            class="customer-item"
+            *ngFor="let item of topFiveProductsReport"
+          >
+            <ion-icon slot="start" name="pricetag-outline"></ion-icon>
+            <ion-label style="margin-left: 10px"
+              >{{item.product.productName}} - {{item.totalUnities}} unidades
+            </ion-label>
+            <ion-label slot="end">{{item.totalAmount.toFixed(2)}}€</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-grid>
+
+  <!-- TOP 5 SERVICIOS -->
+  <ion-grid fixed *ngIf="topFiveServicesReport.length > 0" class="mt-3">
+    <ion-row>
+      <ion-col size="6">
+        <h1 class="section-title">Servicios Top 5</h1>
+      </ion-col>
+    </ion-row>
+    <ion-card class="mx-[0.5rem] mt-3">
+      <ion-card-content class="pl-0">
+        <ion-list lines="inset">
+          <ion-item
+            class="customer-item"
+            *ngFor="let item of topFiveServicesReport"
+          >
+            <ion-icon slot="start" name="cut-outline"></ion-icon>
+            <ion-label style="margin-left: 10px"
+              >{{item.service.serviceName}} - {{item.totalUnities}} unidades
+            </ion-label>
+            <ion-label slot="end">{{item.totalAmount.toFixed(2)}}€</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-grid>
+
+  <!-- RENDIMIENTO DEL EQUIPO -->
+
+  <ion-grid fixed *ngIf="performanceTeamReport.length > 0" class="mt-3">
+    <h1 class="section-title">Rendimiento del equipo</h1>
+    <ion-card class="mx-[0.5rem] mt-3">
+      <ion-card-content class="pl-0">
+        <ion-list lines="inset">
+          <ion-item *ngFor="let report of performanceTeamReport">
+            <ion-avatar slot="start">
+              <img
+                src="{{report?.employee?.image | getImage:'employee':report?.employee?.uuid}}"
+                class="w-8 h-8 object-cover"
+              />
+            </ion-avatar>
+            <ion-label
+              >{{report.employee.name}}
+              <ion-progress-bar
+                [value]="calculatePercentage(report.totalAmount)"
+              ></ion-progress-bar>
+            </ion-label>
+            <ion-note slot="end">{{report.totalAmount.toFixed(2)}}€</ion-note>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-grid>
+</ion-content>

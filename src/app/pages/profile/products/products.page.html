@@ -1,0 +1,46 @@
+<app-header [backButton]="true" [titlePage]="'Productos'"></app-header>
+
+<ion-content>
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="dark" (click)="goToCreate()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-searchbar *ngIf="productCollectionFiltered.length > 0" (ionInput)="searchProduct($event)"
+    showCancelButton="focus" placeholder="Buscar" cancelButtonText="Cancelar" animated></ion-searchbar>
+
+  <ion-grid *ngIf="productCollectionFiltered.length > 0" fixed
+    style="border-top: 1px solid lightgray; border-bottom: 1px solid lightgray">
+    <ion-row>
+      <ion-col size="10">
+        <ion-item>
+          <ion-label
+            [innerText]="productCollectionFiltered.length < 2 && productCollectionFiltered.length > 0 ? productCollectionFiltered.length + ' producto' : productCollectionFiltered.length + ' productos'">
+          </ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-item *ngFor="let product of productCollectionFiltered" (click)="goToDetail(product)" button="true"
+    class="textbox">
+    <ion-button fill="clear">
+      <ion-icon slot="start" name="pricetag-outline"></ion-icon>
+    </ion-button>
+    <ion-label class="service-label">
+      {{product.name}} · {{product.price + (product.decimal / 100) |
+      formatPrice}}
+      <div class="text-red-500 flex" *ngIf="product.qty < 4 && product.qty > 0">
+        <ion-icon class="text-red-500 self-center mr-1" name="warning-outline"></ion-icon>
+        <span>Producto con bajo stock</span>
+      </div>
+      <div class="text-red-500 flex" *ngIf="product.qty === 0">
+        <ion-icon class="text-red-500 self-center mr-1" name="close-circle-outline"></ion-icon>
+        <span>Producto sin stock</span>
+      </div>
+    </ion-label>
+  </ion-item>
+
+  <app-no-data *ngIf="productCollectionFiltered.length === 0"
+    [title]="'Parece que aún no has añadido ningún producto'"></app-no-data>
+</ion-content>

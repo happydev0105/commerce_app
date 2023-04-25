@@ -1,0 +1,69 @@
+<app-header [backButton]="true" [titlePage]="title"></app-header>
+
+<ion-content>
+  <form [formGroup]="ticketForm">
+    <ion-item class="textbox" no-lines lines="none">
+      <ion-label>Categoría</ion-label>
+      <ion-select #type formControlName="type" cancelText="Cancelar" okText="Aceptar">
+        <ion-select-option *ngFor="let type of typeCollection" [value]="type.label">{{type.label | titlecase}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item class="textbox" no-lines lines="none">
+      <ion-grid>
+        <ion-row>
+          <ion-label class="correct-possition">
+            Descripción
+          </ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-textarea ngDefaultControl formControlName="description" type="text"
+            placeholder="Describe tu problema de forma precisa aquí" autocapitalize="true">
+          </ion-textarea>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </form>
+  <ion-grid *ngIf="currentTicket?.comments.length > 0">
+    <hr>
+    <ion-row style="margin: 0px 14px;">
+      <ion-col size="12">
+        <h2 style="margin: 0;">Conversación con el soporte técnico</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let comment of currentTicket.comments; let i = index">
+      <ion-col size="12">
+        <ion-item class="textbox"
+          [ngClass]="currentTicket.comments[i].from === 'commerce'
+              && (currentTicket.comments[i - 1] && currentTicket.comments[i - 1].from === 'commerce'
+              || (currentTicket.comments[i + 1] && currentTicket.comments[i + 1].from === 'commerce')) ? 'group-message' : ''">
+          <ion-icon *ngIf="comment.from === 'manager'" slot="start" size="large" name="chatbubble-outline"></ion-icon>
+          <ion-icon *ngIf="comment.from === 'commerce'" slot="end" size="large" name="chatbubbles-outline"></ion-icon>
+          <ion-label class="ion-text-wrap">
+            {{comment.content}}
+            <br>
+            <hr>
+            <ion-note slot="end">{{comment.createdAt | date: 'dd MMM yyyy • HH:mm:ss'}}</ion-note>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-item *ngIf="!isNew && currentTicket?.status !== 'finished'" class="textbox">
+    <ion-textarea maxRows="4" placeholder="Escribe aquí tu respuesta..." [(ngModel)]="commentContent" autocapitalize="true"></ion-textarea>
+    <ion-icon name="paper-plane" slot="end" (click)="createComment()"></ion-icon>
+  </ion-item>
+
+  <ion-grid *ngIf="isNew">
+    <ion-row>
+      <ion-col
+       ><ion-button [disabled]="ticketForm.invalid" (click)="saveTicket()" class="btn" expand="block">
+         Iniciar chat
+       </ion-button>
+     </ion-col>
+     </ion-row>
+ </ion-grid>
+</ion-footer>

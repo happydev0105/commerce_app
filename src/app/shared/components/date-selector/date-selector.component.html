@@ -1,0 +1,85 @@
+<div class="birth-selector">
+  <div class="grid grid-cols-3 gap-4 p-4 md:p-8 relative top-[19vh]">
+    <div class="col-start-1 box w-full"></div>
+    <div class="col-start-2 box w-full"></div>
+    <div class="col-start-3 box w-full"></div>
+  </div>
+  <div class="grid grid-cols-3 p-4 md:p-8 mt-[-25%] h-full">
+    <div class="mr-3 time-selector">
+      <swiper
+        [initialSlide]="getInitialDaySlide(days)"
+        [direction]="'vertical'"
+        [spaceBetween]="10"
+        [effect]="'coverflow'"
+        [centeredSlides]="true"
+        [slidesPerView]="'auto'"
+        [coverflowEffect]="{
+          rotate: 0,
+          stretch: 0,
+          depth: 0,
+          modifier: 1,
+          slideShadows: false
+        }"
+        class="swiper hours"
+        (transitionEnd)="onSlideSideDayChange($event)"
+      >
+        <ng-template class="slide-left" *ngFor="let item of days" swiperSlide>
+          <div [attr.value]="item">{{ item }}</div>
+        </ng-template>
+      </swiper>
+    </div>
+    <div class="ml-3 time-selector">
+      <swiper
+        [initialSlide]="getInitialMonthSlide(months)"
+        [direction]="'vertical'"
+        [spaceBetween]="10"
+        [effect]="'coverflow'"
+        [centeredSlides]="true"
+        [slidesPerView]="'auto'"
+        [coverflowEffect]="{
+          rotate: 0,
+          stretch: 0,
+          depth: 0,
+          modifier: 1,
+          slideShadows: false
+        }"
+        class="swiper minutes"
+        (transitionEnd)="onSlideSideMonthChange($event)"
+      >
+        <ng-template
+          class="slide-right"
+          *ngFor="let item of months; let i = index"
+          swiperSlide
+        >
+          <div [attr.value]="i">{{ item }}</div>
+        </ng-template>
+      </swiper>
+    </div>
+    <div class="ml-3 time-selector">
+      <swiper
+        [initialSlide]="getInitialYearSlide(years)"
+        [direction]="'vertical'"
+        [spaceBetween]="10"
+        [effect]="'coverflow'"
+        [centeredSlides]="true"
+        [slidesPerView]="'auto'"
+        [coverflowEffect]="{
+          rotate: 0,
+          stretch: 0,
+          depth: 0,
+          modifier: 1,
+          slideShadows: false
+        }"
+        class="swiper minutes"
+        (transitionEnd)="onSlideSideYearChange($event)"
+      >
+        <ng-template class="slide-right" *ngFor="let item of years" swiperSlide>
+          <div [attr.value]="item">{{ item }}</div>
+        </ng-template>
+      </swiper>
+    </div>
+  </div>
+  <div class="absolute bottom-0">
+    <ion-button (click)="dismiss()">Aceptar</ion-button>
+  </div>
+</div>

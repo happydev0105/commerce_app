@@ -1,0 +1,6 @@
+{
+	"appId": "com.yeasy.yeasybiz",
+	"appName": "Yeasy Commerce",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

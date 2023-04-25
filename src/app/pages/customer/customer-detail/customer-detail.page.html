@@ -1,0 +1,235 @@
+<app-header [backButton]="true" [titlePage]="title" [titleCase]="false"></app-header>
+<ion-content *ngIf="customer">
+  <div class="mt-2">
+    <div class="float-right mr-2">
+      <ion-icon size="large" name="create-outline" (click)="editCustomer()">
+      </ion-icon>
+    </div>
+    <div class="flex-row flex w-full items-center justify-center">
+      <div *ngIf="customer?.photoURL; else showInitialsAvatar" class="rounded-full h-32 w-32">
+        <img id="customerLogo" class="rounded-full h-32 w-32 object-cover"
+          src="{{ customer?.photoURL | getImage: 'customer': customer?.uuid }}" />
+      </div>
+    </div>
+    <div class="flex w-full items-center mt-2 justify-center">
+      <p class="text-lg font-semibold">
+        {{customer?.name}} {{customer?.lastname}}
+      </p>
+    </div>
+    <div class="flex w-full items-center justify-center" *ngIf="customer?.hasApp">
+      <ion-chip>
+        <ion-avatar>
+          <img src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        </ion-avatar>
+        <ion-label>Usuario de Yeasy</ion-label>
+      </ion-chip>
+    </div>
+
+    <div class="icons-contact mt-4 flex w-full justify-center">
+      <ion-item class="full-width" *ngIf="customer?.phone" (click)="callCommerce()">
+        <div>
+          <ion-icon class="rounded-full bg-black p-2" name="call-outline"></ion-icon>
+          <ion-label class="text-center">Llamar</ion-label>
+        </div>
+      </ion-item>
+      <ion-item (click)="sendSms()" class="full-width">
+        <div>
+          <ion-icon class="rounded-full bg-black p-2" name="chatbubble-ellipses-outline"></ion-icon>
+          <ion-label class="text-center">SMS</ion-label>
+        </div>
+      </ion-item>
+      <ion-item class="full-width" (click)="sendEmail()">
+        <div>
+          <ion-icon class="rounded-full bg-black p-2" name="mail-outline" size="large"></ion-icon>
+          <ion-label class="text-center">Email</ion-label>
+        </div>
+      </ion-item>
+      <ion-item class="full-width" (click)="viewNotes()">
+        <div>
+          <ion-icon name="reader-outline" class="rounded-full bg-black p-2" size="large"></ion-icon>
+          <ion-label class="text-center">Observaciones</ion-label>
+        </div>
+      </ion-item>
+    </div>
+    <div class="grid grid-cols-3 gap-4 bg-white m-4 p-4 drop-shadow-md">
+      <div class="mx-2">
+        <ion-label>Citas</ion-label>
+        <p>{{totalBooking}}</p>
+      </div>
+      <div class="">
+        <ion-label>Inasistencias</ion-label>
+        <p>{{totalNonAttended}}</p>
+      </div>
+      <div class="">
+        <ion-label>Cancelaciones</ion-label>
+        <p>{{totalCanceled}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="p-4">
+    <ion-segment #mysegment [(ngModel)]="segment">
+      <ion-segment-button SwipedTabs *ngFor="let category of segmentCollection ; let i = index" value="{{category}}">
+        <ion-label>{{category}}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+  <ng-container *ngIf="segment === 'Citas'">
+    <div class="p-4">
+      <ion-segment [(ngModel)]="segmentBook">
+        <ion-segment-button SwipedTabs *ngFor="let category of segmentBookCollection ; let i = index"
+          value="{{category}}">
+          <ion-label>{{category}} [{{category === 'Proximas' ? customerBookings.length :
+            customerBookingsPast.length}}]</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+    <ng-container *ngIf="segmentBook === 'Proximas'">
+      <ng-container *ngIf="customerBookings.length > 0; else noData">
+        <ion-item *ngFor="let booking of customerBookings" class="textbox">
+          <ion-grid fixed>
+            <ion-row>
+              <ion-col size="7">
+                <ion-badge [ngClass]="[
+                  booking.status === 'Pendiente' ? 'bg-[#e7b37d]' : '',
+                  booking.status === 'Pending' ? 'bg-[#e7b37d]' : '',
+                  booking.status === 'Pendiente de pago' ? 'bg-[#888888]' : '',
+                  booking.status === 'Realizada' ? 'badge-green-300' : '',
+                  booking.status === 'No asistida' ? 'badge-red-300' : '' ]">{{booking.status | bookingStatus |
+                  uppercase}}
+                </ion-badge>
+                <p *ngIf="booking.service[0]" class="text-sm m-0">
+                  {{booking.service[0].name}}
+                  ({{booking.service[0].defaultDuration}}) min
+                </p>
+                <hr />
+                <ion-label *ngIf="booking.asignedTo" class="ion-text-wrap p-0">
+                  <p class="text-sm">
+                    {{booking.asignedTo.name}} {{booking.asignedTo.surname}}
+                  </p>
+                </ion-label>
+              </ion-col>
+              <ion-col
+                size="5"
+                class="grid grid-cols-1 content-center text-end"
+                style="border-left: 1px solid #f4f4f4"
+              >
+              <div class="flex flex-col items-center ml-4">
+                <ion-label class="">{{
+                  booking.startsDay | date : "MMMM" | titlecase
+                  }}</ion-label>
+                <h2 class="text-3xl font-semibold">
+                  {{ booking.startsDay | date : "dd" }}
+                </h2>
+                <ion-label class="rounded outline-1 outline-black outline-double px-1">{{ booking.startsHour | formatHour
+                  }}:{{
+                  booking.startsMinute | formatHour
+                  }}h</ion-label>
+              </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ng-container>
+      <ng-template #noData>
+        <div class="p-4">No hay reservas</div>
+      </ng-template>
+    </ng-container>
+    <ng-container *ngIf="segmentBook === 'Pasadas'">
+      <ng-container *ngIf="customerBookingsPast.length > 0; else noData">
+        <ion-item *ngFor="let booking of customerBookingsPast" class="textbox">
+          <ion-grid fixed>
+            <ion-row>
+              <ion-col size="7">
+                <div class="flex justify-between">
+                  <ion-badge  [ngClass]="[
+                  booking.status === 'Pendiente' ? 'bg-[#e7b37d]' : '',
+                  booking.status === 'Pending' ? 'bg-[#e7b37d]' : '',
+                  booking.status === 'Pendiente de pago'
+                    ? 'bg-[#888888]'
+                    : '',
+                  booking.status === 'Realizada' ? 'badge-green-300' : '',
+                  booking.status === 'No asistida' ? 'badge-red-300' : ''
+                ]">{{ booking?.status | bookingStatus | uppercase }}</ion-badge>
+                </div>
+
+                <p *ngIf="booking.service[0]" class="text-sm m-0">
+                  {{booking.service[0].name}}
+                  ({{booking.service[0].defaultDuration}}) min
+                </p>
+
+                <hr />
+                <ion-label *ngIf="booking.asignedTo" class="ion-text-wrap p-0 flex justify-between">
+                  <p class="text-sm">
+                    {{booking.asignedTo.name}} {{booking.asignedTo.surname}}
+                  </p>
+                  <p class="text-md text-black font-semibold m-0">
+                    <span *ngIf="booking?.payment">{{booking?.payment?.amount}} €</span>
+                  </p>
+                </ion-label>
+              </ion-col>
+              <ion-col
+                size="5"
+                class="grid grid-cols-1 content-center text-end"
+                style="border-left: 1px solid #f4f4f4"
+              >
+              <div class="flex flex-col items-center ml-4">
+                <ion-label class="">{{
+                  booking.startsDay | date : "MMMM" | titlecase
+                  }}</ion-label>
+                <h2 class="text-3xl font-semibold">
+                  {{ booking.startsDay | date : "dd" }}
+                </h2>
+                <ion-label class="rounded outline-1 outline-black outline-double px-1">{{ booking.startsHour | formatHour
+                  }}:{{
+                  booking.startsMinute | formatHour
+                  }}h</ion-label>
+              </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ng-container>
+      <ng-template #noData>
+        <div class="p-4">No hay reservas</div>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="segment === 'Pagos'">
+    <ion-list>
+      <ion-label class="p-4">Total facturado: {{totalPayedBookings | formatPrice}}
+      </ion-label>
+      <ion-item-group *ngFor="let payment of customerPayments; let i = index">
+        <ion-item class="textbox">
+          <ion-icon slot="start" name="cash-outline"></ion-icon>
+          <ion-label>
+            <h3 *ngIf="!payment?.booking">
+              {{payment?.createdAt | date: 'HH:mm'}}
+            </h3>
+            <h3 *ngIf="payment?.booking">
+              {{payment?.booking.startsHour |
+              formatHour}}:{{payment?.booking.startsMinute | formatHour}} |
+              {{payment?.booking.startsDay | date:'dd-MM-YYYY'}}
+            </h3>
+            <ion-note>{{payment?.booking?.asignedTo?.name}}
+              {{payment?.booking?.asignedTo?.surname}}
+              <ng-container *ngIf="payment?.service.length > 0">
+                <span *ngFor="let service of payment?.service">• {{service.name}}</span>
+              </ng-container>
+              <ng-container *ngIf="payment?.product.length > 0">
+                <span *ngFor="let product of payment?.product">• {{product.name}}</span>
+              </ng-container>
+            </ion-note>
+          </ion-label>
+          <ion-note slot="end" color="dark">{{payment.amount}}<span
+              *ngIf="payment.decimals !== 0">.{{payment.decimals}}<span
+                *ngIf="payment.decimals !== 0 && payment.decimals.toString().length === 1 ">0</span> </span>€</ion-note>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+  </ng-container>
+</ion-content>
+
+<ng-template #showInitialsAvatar>
+  <app-avatar-initials [name]="customer?.name" [surname]="customer?.lastname"
+    [isCustomer]="false"></app-avatar-initials>
+</ng-template>

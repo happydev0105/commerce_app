@@ -1,0 +1,16 @@
+ion-content, ion-item {
+  --background: #9bfab0;
+  --color: white;
+}
+.payment-confirmed {
+  margin-top: 50%;
+  text-align: center;
+
+  .payment-icon {
+    font-size: 128px;
+  }
+  h1,h2 {
+    color: white;
+  }
+ 
+}

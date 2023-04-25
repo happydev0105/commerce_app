@@ -1,0 +1,471 @@
+<!-- White square to mask employee -->
+<div class="bg-white p-0 top-[-1px] w-8 h-10 absolute z-[999]"></div>
+
+<div class="newTable" [style.maxHeight]="containerHeight + 'px'" id="container" *ngIf="timetable && isReady">
+  <table class="bg-white">
+    <thead class="bg-white">
+      <tr>
+        <th></th>
+        <ng-container *ngFor="let employee of timetable.employees">
+          <th class="p-0">
+            <app-employee [employee]="employee" [selectedDate]="selectedDate"></app-employee>
+          </th>
+        </ng-container>
+      </tr>
+    </thead>
+
+    <tbody id="tbody">
+      <tr *ngFor="let frame of timetable.timeFrames">
+        <th >
+          <div class="sticky-col background-white">
+            <span >{{ frame.label| timeframe }}</span>
+          </div>
+        </th>
+        <td [ngClass]="frame.isOutOfRange? '': 'not-available'" *ngFor="let employee of timetable.employees"></td>
+      </tr>
+    </tbody>
+
+
+    <!-- CAPA DE RESERVAS -->
+    <div class="calendar-container-draggable-zone text-xs" [style.left]="leftByPlatform" id="draggableZone"
+      #draggableZone [style.width]="dragWidth" appLongPress (mouseLongPress)="logLongPress($event)">
+
+      <!--  BOOKINGS AND NON-AVAILABILITY CARDS -->
+      <ng-container *ngFor="let reservation of $reservations | async; let i = index">
+        <!--  BOOKINGS -->
+        <div *ngIf="reservation.isBooking" (click)="openBooking(reservation, true)" [id]="reservation.uuid"
+          [class]="'_' + reservation.uuid" [ngResizable]="
+            draggableItem === reservation.uuid && !reservation.isGhost
+          " [preventDefaultEvent]="true" [rzGrid]="[0, 8]" [rzMinHeight]="24" [rzMaxHeight]="viewHeight - 96"
+          rzHandles="n,s" (rzResizing)="onResize($event, reservation.uuid)" (rzStop)="onResizeStop(reservation.uuid)"
+          [ngStyle]="{
+            'border-left': '5px solid' + reservation?.service[0]?.color,
+            transform:
+              'translate3d(' +
+              reservation.mobilePosition?.x +
+              'px,' +
+              reservation.mobilePosition?.y +
+              'px,' +
+              '0px )'
+          }" [style.background-color]="
+            reservation.isBooking ? eColor[reservation.service[0]?.color] : ''
+          " appLongPress (mouseLongPress)="logLongPress($event, reservation.uuid)"
+          [style.height]="reservation.mobileSize?.height + 'px'" [style.width]="columnWidth + 'px'" [ngClass]="[
+            draggableItem !== reservation.uuid && draggableItem !== null
+              ? 'opacity'
+              : '',
+            reservation?.isGhost ? 'isGhost' : '',
+            isEditting && draggableItem === reservation.uuid
+              ? 'bg-white z-50'
+              : 'overflow-hidden',
+            isEditting &&
+            draggableItem !== reservation.uuid &&
+            draggableItem !== null
+              ? 'no-click'
+              : '',
+            reservation.isBooking
+              ? 'reservation draggableItem'
+              : 'non-availability',
+            isNotPayed(reservation) && !isEditting
+              ? 'elementToFadeInAndOut'
+              : ''
+          ]">
+
+          <div [id]="reservation?.uuid" class="no-click">
+
+            <span [ngClass]="reservation.isOverlapped ? 'flex':''" class="no-click"
+              *ngIf="!isDragging; else whenDragging">
+              {{
+              dateService.formatBookingTimetable(
+              reservation.startsHour,
+              reservation.startsMinute,
+              reservation.duration
+              )
+              }}
+            </span>
+            <ng-template #whenDragging>
+              <span>
+                {{
+                draggingData?.uuid === reservation.uuid
+                ? draggingData?.time
+                : dateService.formatBookingTimetable(
+                reservation.startsHour,
+                reservation.startsMinute,
+                reservation.duration
+                )
+                }}
+              </span>
+            </ng-template>
+            <ion-icon *ngIf="reservation.note  " name="chatbox"
+              class="no-click text-xs float-right text-white"></ion-icon>
+            <ion-icon *ngIf="reservation.message " name="chatbubble"
+              class="no-click text-xs float-right text-white"></ion-icon>
+            <ng-container [ngSwitch]="reservation.status">
+              <ion-icon *ngSwitchCase="'No asistida'" name="close-circle-outline"
+                class="no-click text-sm float-right bg-red-400 rounded-full"></ion-icon>
+              <ion-icon *ngSwitchCase="'Realizada'" name="checkmark-done-circle-outline"
+                class="no-click text-sm float-right bg-[#9bfab0] rounded-full text-white"></ion-icon>
+              <ion-icon *ngSwitchCase="'Pendiente de pago'" name="alert-circle-outline"
+                class="no-click text-sm float-right bg-orange-400 rounded-full"></ion-icon>
+              <span *ngSwitchDefault></span>
+            </ng-container>
+
+            <span class="no-click " *ngIf="reservation.duration < 21 && !reservation.isOverlapped">
+              {{
+              reservation?.customer?.isWalkingClient
+              ? "Sin cita"
+              : reservation?.customer?.name
+              }}
+            </span>
+            <!--   <span class="no-click"
+              *ngIf="reservation.duration < 19 && !reservation.isOverlapped && (!reservation.note || !reservation.message  ) ">
+              {{
+              reservation?.customer?.lastname
+              }}
+            </span> -->
+
+
+          </div>
+          <div class="no-click leading-none " *ngIf="reservation.duration > 21 ">
+            <span class="no-click">
+              {{
+              reservation?.customer?.isWalkingClient
+              ? "Sin cita"
+              : reservation?.customer?.name
+              }}
+            </span>
+            <span class="no-click">
+              {{
+              reservation?.customer?.lastname
+              }}
+            </span>
+            <span class="no-click" *ngIf="!reservation.isOverlapped">
+              · {{reservation.duration >30 ? reservation?.service[0]?.name :
+              reservation?.service[0]?.name.slice(0,setUpOneline(reservation)).trim()+'...' }} </span>
+          </div>
+
+
+          <!-- Datos reservas overlapeadas -->
+          <!--  <div *ngIf="reservation.isOverlapped" class="grid grid-cols-12 leading-none no-click">
+            <div [ngClass]="
+                reservation.duration < 21 ? 'col-span-6' : 'col-span-6'
+              ">
+              <ng-container>
+                <p *ngIf="!isDragging" class="text-xs m-0 leading-none">
+                  {{
+                  dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  ).length > 2
+                  ? (dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  | slice
+                  : 0
+                  : (draggableItem === reservation.uuid ? 8 : 4)) +
+                  "..."
+                  : dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+                <p class="text-xs m-0 leading-none" *ngIf="isDragging">
+                  {{
+                  draggingData?.uuid === reservation.uuid
+                  ? draggingData?.time
+                  : dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+              </ng-container>
+
+              <ng-template #noEllipsys>
+                <p *ngIf="!isDragging" class="text-xs m-0 leading-none">
+                  {{
+                  dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+                <p class="text-xs m-0 leading-none" *ngIf="isDragging">
+                  {{
+                  draggingData?.uuid === reservation.uuid
+                  ? draggingData?.time
+                  : dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+              </ng-template>
+            </div>
+            <div [ngClass]="
+                reservation.duration < 21
+                  ? 'col-span-6 order-last float-right'
+                  : 'float-right col-span-6'
+              ">
+              <ng-container [ngSwitch]="reservation.status">
+                <ion-icon *ngSwitchCase="'No asistida'" name="close-circle-outline"
+                  class="text-sm float-right bg-red-400 rounded-full"></ion-icon>
+                <ion-icon *ngSwitchCase="'Realizada'" name="checkmark-done-circle-outline"
+                  class="text-sm float-right bg-[#9bfab0] rounded-full text-white"></ion-icon>
+                <ion-icon *ngSwitchCase="'Pendiente de pago'" name="alert-circle-outline"
+                  class="text-sm float-right bg-orange-400 rounded-full"></ion-icon>
+                <span *ngSwitchDefault></span>
+
+              </ng-container>
+            </div>
+            <div *ngIf="
+                reservation.duration > 21 &&
+                reservation.mobileSize?.width > columnWidth / 3
+              " [ngClass]="
+                reservation.duration > 21 ? 'col-span-12' : 'col-span-6'
+              ">
+              <p class="">
+                <span>
+                  {{
+                  reservation?.customer?.isWalkingClient
+                  ? "Sin cita"
+                  : reservation?.customer?.name
+                  }}
+                  {{
+                  reservation.service[0].name.length > 5
+                  ? (reservation.service[0].name | slice : 0 : 5)
+                  : reservation.service[0].name
+                  }}
+                </span>
+              </p>
+            </div>
+          </div> -->
+          <!-- Datos reservas NO overlapeadas -->
+          <!--  <div *ngIf="!reservation.isOverlapped" [ngClass]="
+              reservation.note ||
+              reservation.message ||
+              reservation.status !== 'Pendiente'
+                ? 'grid-cols-3'
+                : 'grid-cols-2'
+            " class="grid break-all leading-none no-click">
+            <div [ngClass]="reservation.duration < 21 ? 'col-span-1' : 'col-span-2'">
+              <ng-container *ngIf="reservation.duration < 21; else noEllipsys">
+                <p *ngIf="!isDragging" class="text-xs m-0 leading-none">
+                  {{
+                  dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+                <p class="text-xs m-0 leading-none" *ngIf="isDragging">
+                  {{
+                  draggingData?.uuid === reservation.uuid
+                  ? (draggingData?.time | slice : 0 : 7) + "..."
+                  : (dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  ) | slice : 0 : 7) + "..."
+                  }}
+                </p>
+              </ng-container>
+
+              <ng-template #noEllipsys>
+                <p *ngIf="!isDragging" class="text-xs m-0 leading-none">
+                  {{
+                  dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+                <p class="text-xs m-0 leading-none" *ngIf="isDragging">
+                  {{
+                  draggingData?.uuid === reservation.uuid
+                  ? draggingData?.time
+                  : dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+              </ng-template>
+            </div>
+            <div [ngClass]="
+                reservation.duration < 21 ? 'col-span-1' : 'col-span-2'
+              " *ngIf="reservation.duration < 21">
+              <p class="">
+                <span class="">
+                  {{
+                  reservation?.service[0]?.name.length > 8
+                  ? (reservation?.service[0]?.name | slice : 0 : 8) + "..."
+                  : reservation?.service[0]?.name
+                  }}
+                </span>
+              </p>
+            </div>
+
+            <div *ngIf="
+                reservation.note ||
+                reservation.message ||
+                reservation.status !== 'Pendiente'
+              " [ngClass]="
+                reservation.duration < 21 ? 'col-span-1' : 'col-span-1'
+              ">
+              <ion-icon *ngIf="reservation.note" name="chatbox-outline"
+                class="text-xs float-right bg-white rounded-full"></ion-icon>
+              <ion-icon *ngIf="reservation.message" name="chatbubble-outline"
+                class="text-xs float-right bg-white rounded-full"></ion-icon>
+              <ng-container [ngSwitch]="reservation.status">
+                <ion-icon *ngSwitchCase="'No asistida'" name="close-circle-outline"
+                  class="text-sm float-right bg-red-400 rounded-full"></ion-icon>
+                <ion-icon *ngSwitchCase="'Realizada'" name="checkmark-done-circle-outline"
+                  class="text-sm float-right bg-[#9bfab0] rounded-full text-white"></ion-icon>
+                <ion-icon *ngSwitchCase="'Pendiente de pago'" name="alert-circle-outline"
+                  class="text-sm float-right bg-orange-400 rounded-full"></ion-icon>
+                <span *ngSwitchDefault></span>
+              </ng-container>
+            </div>
+          </div>
+          <ng-container *ngIf="reservation.isBooking">
+            <p class="no-click leading-none" *ngIf="
+                reservation.duration >= 21 &&
+                reservation.mobileSize?.height >= 24 &&
+                !reservation.isOverlapped
+              ">
+              {{
+              reservation?.customer?.isWalkingClient
+              ? "Sin cita"
+              : reservation?.customer?.name
+              }}
+              ·
+              <span *ngFor="let service of reservation.service">
+                {{
+                service?.name?.length > 20
+                ? (service.name | slice : 0 : 20) + ".."
+                : service.name
+                }}
+              </span>
+            </p>
+          </ng-container> -->
+        </div>
+        <!-- END BOOKINGS -->
+        <!--  NON_AVAILABILITY -->
+        <div *ngIf="!reservation.isBooking" (click)="openBooking(reservation, true)" [id]="reservation.uuid"
+          [class]="'_' + reservation.uuid" [ngResizable]="draggableItem === reservation.uuid"
+          [preventDefaultEvent]="true" [rzGrid]="[0, 8]" [rzMinHeight]="24" [rzMaxHeight]="viewHeight - 96"
+          rzHandles="n,s" (rzResizing)="onResize($event, reservation.uuid)" (rzStop)="onResizeStop(reservation.uuid)"
+          [ngStyle]="{
+            transform:
+              'translate3d(' +
+              reservation.mobilePosition?.x +
+              'px,' +
+              reservation.mobilePosition?.y +
+              'px,' +
+              '0px )'
+          }" [style.height]="reservation.mobileSize?.height + 'px'"
+          [style.width]="reservation.mobileSize?.width + 'px'" class="drag-block resizable-widget draggableItem"
+          appLongPress (mouseLongPress)="logLongPress($event, reservation.uuid)" [ngClass]="[
+            isEditting && draggableItem === reservation.uuid
+              ? 'bg-white z-50'
+              : 'overflow-hidden',
+            draggableItem !== reservation.uuid && draggableItem !== null
+              ? 'opacity'
+              : '',
+            reservation.isBooking ? 'reservation' : 'non-availability'
+          ]">
+          <div class="grid grid-cols-12 break-all leading-none no-click">
+            <div [ngClass]="
+                reservation.duration < 21 ? 'col-span-12' : 'col-span-12'
+              ">
+              <ng-container>
+                <p *ngIf="!isDragging" class="text-xs m-0 leading-none">
+                  {{
+                  dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+                <p class="text-xs m-0 leading-none" *ngIf="isDragging">
+                  {{
+                  draggingData?.uuid === reservation.uuid
+                  ? draggingData?.time
+                  : dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+              </ng-container>
+
+              <ng-template #noEllipsys>
+                <p *ngIf="!isDragging" class="text-xs m-0 leading-none">
+                  {{
+                  dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+                <p class="text-xs m-0 leading-none" *ngIf="isDragging">
+                  {{
+                  draggingData?.uuid === reservation.uuid
+                  ? draggingData?.time
+                  : dateService.formatBookingTimetable(
+                  reservation.startsHour,
+                  reservation.startsMinute,
+                  reservation.duration
+                  )
+                  }}
+                </p>
+              </ng-template>
+            </div>
+
+            <div class="col-span-12" *ngIf="reservation.duration > 21">
+              <span class="text-xs m-0 leading-none word-break">{{
+                reservation.message
+                }}</span>
+            </div>
+          </div>
+        </div>
+        <!--  END NON_AVAILABILITY -->
+      </ng-container>
+      <!--  FREE TIME CARDS TO AVOID OF OVERLAP -->
+      <ng-container *ngFor="let reservation of timetable.freeTime">
+        <div [id]="reservation.uuid" [ngStyle]="{
+            transform:
+              'translate3d(' +
+              reservation.mobilePosition?.x +
+              'px,' +
+              reservation.mobilePosition?.y +
+              'px,' +
+              '0px )'
+          }" [style.height]="reservation.mobileSize?.height + 'px'"
+          [style.width]="reservation.mobileSize?.width + 'px'" class="drag-block resizable-widget"
+          [ngClass]="[reservation.isBooking ? 'reservation' : 'freetime']"></div>
+      </ng-container>
+      <!-- END FREE TIME CARDS TO AVOID OF OVERLAP -->
+    </div>
+    <!-- END CAPA DE RESERVAS -->
+  </table>
+  <!-- LINEA DE TIEMPO ACTUAL -->
+  <div id="timeline" class="time" *ngIf="isInsideTimetable() && isToday" [style.top]="$actualHour.value + 'px'">
+    <div class="relative h-2 w-2 rounded-full bg-green-900"></div>
+  </div>
+</div>

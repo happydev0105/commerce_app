@@ -1,0 +1,142 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button
+        slot="start"
+        text=""
+        defaultHref="tabs/profile"
+        color="dark"
+      >
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>Transacciones</ion-title>
+    <ion-icon
+      size="large"
+      (click)="selectRange()"
+      slot="end"
+      name="download-outline"
+    ></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col [size]="billingCollection.length === 0 ? 12 : 6">
+        <ion-button id="open-billing-day" expand="block" shape="outline">
+          Consultar día
+        </ion-button>
+      </ion-col>
+      <ion-col size="6">
+        <ion-button
+          *ngIf="searchByDay"
+          expand="block"
+          shape="outline"
+          (click)="seeActualWeek()"
+        >
+          Ver semana actual
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list>
+    <ion-item-group
+      *ngFor="let item of billingCollection; let i = index"
+      inset="true"
+      lines="none"
+    >
+      <ion-item-divider>
+        <ion-label slot="start">{{item[0] | formatDate}}</ion-label>
+        <ion-label slot="end">
+          <h3>
+            Total facturado: <b>{{totalAmounts[i] ? totalAmounts[i] : 0}}€</b>
+          </h3>
+        </ion-label>
+      </ion-item-divider>
+      <ion-item
+        class="textbox"
+        *ngFor="let payment of item[1]"
+        button="true"
+        (click)="goToDetail(payment)"
+      >
+        <ion-icon slot="start" name="cash-outline"></ion-icon>
+        <ion-label>
+          <h3 *ngIf="!payment?.booking">
+            {{payment?.createdAt | date: 'HH:mm'}}
+          </h3>
+          <h3 *ngIf="payment?.booking">
+            {{payment?.booking.startsHour |
+            formatHour}}:{{payment?.booking.startsMinute | formatHour}} |
+            {{payment?.booking.startsDay | date:'dd-MM-YYYY'}}
+          </h3>
+          <ion-note
+            >{{payment?.customer.name}}
+            <ng-container *ngIf="payment?.service.length > 0">
+              <span *ngFor="let service of payment?.service"
+                >• {{service.name}}</span
+              >
+            </ng-container>
+            <ng-container *ngIf="payment?.paymentProducts.length > 0">
+              <span *ngFor="let product of payment?.paymentProducts"
+                >• {{product.productName}}</span
+              >
+            </ng-container>
+            <p *ngIf="payment" class="text-xs">
+              {{payment.createdAt | date:'dd-MM-YYYY HH:mm'}}
+            </p>
+          </ion-note>
+        </ion-label>
+        <ion-note slot="end" color="dark"
+          >{{payment.amount}}<span *ngIf="payment.decimals !== 0"
+            >.{{payment.decimals}}<span
+              *ngIf="payment.decimals !== 0 && payment.decimals.toString().length === 1 "
+              >0</span
+            > </span
+          >€
+        </ion-note>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+
+  <ion-modal
+    id="open-modal-calendar"
+    initialBreakpoint="0.50"
+    trigger="open-billing-day"
+    [backdropDismiss]="true"
+  >
+    <ng-template>
+      <ion-content>
+        <ion-toolbar>
+          <ion-title>Selecciona un día</ion-title>
+          <ion-buttons slot="start">
+            <ion-button (click)="onDismiss($event, false)">
+              Cancelar
+            </ion-button>
+          </ion-buttons>
+          <ion-buttons slot="end">
+            <ion-button color="dark" (click)="onDismiss($event, true)">
+              Aceptar
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ion-datetime
+          #datetime
+          first-day-of-week="1"
+          [max]="today"
+          locale="es-ES"
+          presentation="date"
+          size="cover"
+          (ionChange)="dateChanged(datetime.value)"
+        >
+        </ion-datetime>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <app-no-data
+    *ngIf="billingCollection.length === 0"
+    [title]="'Esta semana aún no se ha realizado ninguna transacción'"
+    [content]="false"
+  ></app-no-data>
+</ion-content>

@@ -1,0 +1,13 @@
+<app-header [titlePage]="'Formación Yeasy'" [backButton]="true"></app-header>
+
+<ion-content>
+  <ion-item *ngIf="trainingCollection.length > 0" class="textbox">
+    <ion-icon slot="start" name="information-circle-outline"></ion-icon>
+    <ion-label class="ion-text-wrap">Accede a un vídeo de formación exclusivo cada mes</ion-label>
+  </ion-item>
+  <ng-container *ngFor="let item of trainingCollection">
+    <app-video-player-card [video]="item" (click)="navigateTo(item)" [showDescription]="false"></app-video-player-card>
+  </ng-container>
+  <app-no-data *ngIf="trainingCollection.length === 0" [title]="'Aún no tienes vídeos de formación'"
+    [content]="false"></app-no-data>
+</ion-content>

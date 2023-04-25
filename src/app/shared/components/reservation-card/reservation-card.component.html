@@ -1,0 +1,10 @@
+<div
+  ngResizable
+  class="reservationCard drag-block resizable-widget"
+  [style.height]="reservation.mobileSize.height + 'px'"
+  [style.width]="reservation.mobileSize.width + 'px'"
+>
+  <p [innerText]="formatBookingTimetable(reservation)"></p>
+  {{ reservation.service }}
+  {{ reservation.customer }}
+</div>

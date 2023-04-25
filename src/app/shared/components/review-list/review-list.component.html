@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Reseñas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon color="dark" slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="reviewCollection?.length > 0; else noData">
+    <section class="review-page">
+      <ng-container *ngFor="let review of reviewCollection">
+        <div class="p-4" (click)="selectReview(review)">
+          <app-review-card [review]="review" [showShare]="false"></app-review-card>
+          <hr>
+        </div>
+      </ng-container>
+    </section>
+  </ng-container>
+</ion-content>
+<ng-template #noData>
+  <app-no-data [title]="'No tienes ninguna reseña por el momento'" [content]="false"></app-no-data>
+</ng-template>
+
+
+<!-- <section class=" p-4 shadow-lg bg-white rounded-md" *ngIf="review">
+  <header>
+    <div class="grid grid-cols-12">
+      <div class="col-span-6 grid">
+        <div>
+          <star-rating class="noClick float-left left-0 relative" [disabled]="true" [starType]="'svg'" staticColor="ok"
+            [rating]="review.value">
+          </star-rating>
+        </div>
+        <div>
+          <div class="text-sm ">{{review?.booking?.service[0]?.name}}</div>
+
+          <div class="text-sm ">
+            {{review?.booking?.asignedTo?.name}} {{review.booking.asignedTo.surname}}
+          </div>
+        </div>
+
+      </div>
+      <div class="col-span-6">
+        <p class="text-sm float-right">{{review?.booking?.customer?.name | titlecase}} · {{review?.createdAt | date}}
+        </p>
+      </div>
+    </div>
+
+  </header>
+  <div class="grid grid-cols-12">
+    <div class="col-span-6 grid py-2">
+      <p>{{review?.review}}</p>
+    </div>
+  </div>
+</section>
+ -->

@@ -1,0 +1,9 @@
+<ion-card *ngIf="isReady">
+  <ion-card-header>
+    <ion-card-title *ngIf="hasTitle" class="card-title">Ups!</ion-card-title>
+    <ion-card-subtitle class="ion-text-center">{{title}}</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content *ngIf="content">
+    Para crear uno pulsa el botón <ion-icon name="add-circle-sharp" ></ion-icon> situado en la parte inferior derecha
+  </ion-card-content>
+</ion-card>

@@ -1,0 +1,144 @@
+<app-header [backButton]="isFromBooking" [titlePage]="'Venta'"></app-header>
+
+<ion-content>
+  <form [formGroup]="form" novalidate>
+    <ion-item [disabled]="isWalkinClient" class="textbox h-20 flex" (click)="presentModal()" no-lines lines="none"
+      button="true">
+      <ion-label>Cliente </ion-label>
+      <ion-input ngDefaultControl type="text" formControlName="customer" class="ion-text-right" readonly></ion-input>
+    </ion-item>
+    <ng-container *ngIf="!customer?.valid && customer?.errors!['required'] && isSubmitted">
+      <p class="px-8 text-red-400">Este campo es requerido</p>
+    </ng-container>
+    <ion-item *ngIf="!hideWalkinClient" class="textbox">
+      <ion-label slot="start">Cliente sin cita previa</ion-label>
+      <ion-checkbox slot="end" (ionChange)="onChangeCheckbox($event)" [(ngModel)]="isWalkinClient"
+        [ngModelOptions]="{standalone: true}">
+      </ion-checkbox>
+    </ion-item>
+    <ion-item [hidden]="isFromBooking" class="textbox" no-lines lines="none" *ngIf="employeeCollection?.length > 0">
+      <ion-label>Selecciona un empleado</ion-label>
+      <ion-select #employee class="mr-8" formControlName="employee" interface="action-sheet"
+        (ionChange)="selectedEmployee(employee.value)" cancelText="Cancelar">
+        <ion-select-option *ngFor="let employee of employeeCollection" [value]="employee.uuid">{{employee.name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ng-container *ngIf="!employee?.valid && employee?.errors['required'] && isSubmitted &&!isFromBooking">
+      <p class="px-8 text-red-400">Este campo es requerido</p>
+    </ng-container>
+    <ion-item class="flex textbox h-20" no-lines
+      lines="none">
+      <ion-label>Añadir € </ion-label>
+      <ion-input ngDefaultControl type="number" formControlName="amount" placeholder="0"
+        (ionInput)="changeAmount($event)" class="ion-text-right" inputmode="decimal"></ion-input>
+    </ion-item>
+
+   
+    <ion-item class="textbox h-20 flex hidden" no-lines lines="none">
+      <ion-label>Método de pago <span class="text-red-400">*</span></ion-label>
+      <ion-select #paymethod formControlName="payMethod" cancelText="Cancelar" interface="action-sheet"
+        (ionChange)="selectedMethod(paymethod.value)">
+        <ion-select-option *ngFor="let method of paymentMethodCollection"
+          [value]="method.uuid">{{method.label}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  
+  </form>
+  <ng-container *ngFor="let service of serviceSelected">
+    <ion-card button="true" class="h-12">
+      <ion-grid class="service-card">
+        <ion-row class="service-row h-12">
+          <ion-col size="0.1" [style.background]="service.color"></ion-col>
+          <ion-col class="no-padding grid">
+            <ion-item>
+              <ion-label class="place-self-center w-full pl-3">{{ service.name }} · {{ service.defaultDuration }} min
+                ·
+                {{
+                service.price| formatPrice }}</ion-label>
+              <ion-button fill="clear" (click)="deleteService(service)">
+                <ion-icon slot="end" name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </ng-container>
+  <ng-container *ngFor="let product of productSelected">
+    <ion-card button="true" class="h-12">
+      <ion-grid class="service-card">
+        <ion-row class="service-row h-12">
+          <ion-col size="0.1" class="black"></ion-col>
+          <ion-col class="no-padding grid">
+            <ion-item>
+              <ion-label class="place-self-center w-full pl-3">
+                {{ product?.name }} · {{ product?.price * product?.qty + " €" }}
+                - {{product?.qty}} unidad{{product?.qty > 1 ? 'es' :
+                ''}}</ion-label>
+              <ion-button fill="clear" (click)="deleteProduct(product)">
+                <ion-icon slot="end" name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </ng-container>
+  <ion-grid class="no-padding">
+    <ion-row style="align-items: center">
+     
+
+      <ion-col size="6" class="no-padding">
+        <ion-item class="textbox stacked-item" (click)="presentProductModal()">
+          <ion-label class="no-padding">Añadir producto</ion-label>
+          <ion-button fill="clear">
+            <ion-icon slot="end" name="add"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6" class="no-padding">
+        <ion-item (click)="presentServiceModal()" class="textbox">
+          <ion-label class="no-padding">Añadir servicio</ion-label>
+          <ion-button fill="clear">
+            <ion-icon slot="end" name="add"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" class="no-padding">
+        <ion-item class="textbox" no-lines lines="none">
+          <ion-label class="no-padding">Desc. %</ion-label>
+          <ion-input ngDefaultControl clearOnEdit="true" max="100" (ionInput)="inputDiscountPercent($event)" type="number" [min]="0"
+            class="ion-text-right" inputmode="numeric" placeholder="0"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" class="no-padding">
+        <ion-item class="textbox  " no-lines lines="none">
+          <ion-label class="no-padding">Desc. neto</ion-label>
+          <ion-input ngDefaultControl (ionFocus)="checkIfZero()" (ionBlur)="checkIfZeroBlur()"
+            (ionInput)="inputDiscount($event)" type="number" [value]="discountValueNeto" class="ion-text-right"
+            inputmode="decimal" placeholder="0"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+<app-alert #deleteAlert (actionEmitter)="alertBox($event)" [title]="'¿Desea cancelar la venta?'"
+  [message]="'Se perderán todos los cambios realizados'"></app-alert>
+<ion-footer class="ion-no-border lg:container lg:mx-auto lg:px-48">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="openAlert()" class="btn" expand="block">
+          Cancelar
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="onSubmit()" [disabled]="!form.valid || totalPrice === 0" class="btn" expand="block">
+          {{totalPrice.toFixed(2) | formatPrice}} · Continuar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

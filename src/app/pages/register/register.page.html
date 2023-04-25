@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="Volver" color="dark"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-row>
+    <ion-col class="text-center">
+      <ion-img class="title-img" src="assets/icon/LogoFinalYeasy.svg"></ion-img>
+    </ion-col>
+  </ion-row>
+
+  <ion-text>
+    <h3 style="padding-left: 8%;">Regístrate sin compromiso</h3>
+  </ion-text>
+
+  <form [formGroup]="registerForm" (ngSubmit)="registerCustomer()">
+
+    <ion-item mode="ios" class="textbox">
+      <ion-label>Nombre</ion-label>
+      <ion-input type="text" formControlName="name" autocapitalize="true" [maxlength]="30"></ion-input>
+    </ion-item>
+
+    <ion-item mode="ios" class="textbox">
+      <ion-label>Correo electrónico</ion-label>
+      <ion-input type="email" formControlName="email" inputmode="email"></ion-input>
+    </ion-item>
+
+    <ion-item mode="ios" class="textbox">
+      <ion-label>Contraseña</ion-label>
+      <ion-input type="password" formControlName="password"></ion-input>
+    </ion-item>
+
+    <ion-button type="submit" [disabled]="registerForm.invalid" color="dark" expand="block" >
+      CREAR CUENTA
+    </ion-button>
+
+  </form>
+
+  <div class="footer">
+      <ion-label slot="end">¿Ya tienes cuenta? <b><u (click)="goToLogin()">Inicia sesión</u></b></ion-label>
+  </div>
+
+</ion-content>

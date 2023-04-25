@@ -1,0 +1,74 @@
+<ng-container *ngIf="reservation">
+  <div [id]="reservation?.uuid" class="no-click">
+
+    <span [ngClass]="reservation.isOverlapped ? 'flex':''" class="no-click" *ngIf="!isDragging; else whenDragging">
+      {{
+      dateService.formatBookingTimetable(
+      reservation.startsHour,
+      reservation.startsMinute,
+      reservation.duration
+      )
+      }}
+    </span>
+    <ng-template #whenDragging>
+      <span>
+        {{
+        draggingDataPrivate?.uuid === reservation.uuid
+        ? draggingDataPrivate?.time
+        : dateService.formatBookingTimetable(
+        reservation.startsHour,
+        reservation.startsMinute,
+        reservation.duration
+        )
+        }}
+      </span>
+    </ng-template>
+    <ion-icon *ngIf="reservation.note && reservation.duration > 21 " name="chatbox-outline"
+      class="no-click text-xs float-right bg-white rounded-full"></ion-icon>
+    <ion-icon *ngIf="reservation.message && reservation.duration > 21" name="chatbubble-outline"
+      class="no-click text-xs float-right bg-white rounded-full"></ion-icon>
+    <ng-container [ngSwitch]="reservation.status">
+      <ion-icon *ngSwitchCase="'No asistida'" name="close-circle-outline"
+        class="no-click text-sm float-right bg-red-400 rounded-full"></ion-icon>
+      <ion-icon *ngSwitchCase="'Realizada'" name="checkmark-done-circle-outline"
+        class="no-click text-sm float-right bg-[#9bfab0] rounded-full text-white"></ion-icon>
+      <ion-icon *ngSwitchCase="'Pendiente de pago'" name="alert-circle-outline"
+        class="no-click text-sm float-right bg-orange-400 rounded-full"></ion-icon>
+      <span *ngSwitchDefault></span>
+    </ng-container>
+
+    <span class="no-click" *ngIf="reservation.duration < 21 && !reservation.isOverlapped">
+      {{
+      reservation?.customer?.isWalkingClient
+      ? "Sin cita"
+      : reservation?.customer?.name
+      }}
+    </span>
+    <span class="no-click" *ngIf="reservation.duration < 21 && !reservation.isOverlapped">
+      {{
+      reservation?.customer?.lastname
+      }}
+    </span>
+
+
+  </div>
+  <div class="no-click " *ngIf="reservation.duration > 21 ">
+    <span class="no-click">
+      {{
+      reservation?.customer?.isWalkingClient
+      ? "Sin cita"
+      : reservation?.customer?.name
+      }}
+    </span>
+    <span class="no-click">
+      {{
+      reservation?.customer?.lastname
+      }}
+    </span>
+    <span class="no-click" *ngIf="!reservation.isOverlapped">
+      · {{reservation.duration >30 ? reservation?.service[0]?.name :
+      reservation?.service[0]?.name.slice(0,setUpOneline(reservation)).trim()+'...' }} </span>
+  </div>
+
+
+</ng-container>
